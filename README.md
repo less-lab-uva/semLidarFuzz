@@ -93,7 +93,7 @@ Tool for the Semantic LiDAR Fuzzing paper
 - ./fullSemLiDARFuzz
     - python semFuzzLidar.py [args] generates mutations and evaluates them
     - python finalVisualization.py [args] visualizes the top results reported by the finalDetails object produced (see controllers/finalVisualize)
-    - python .py [args] creates csv files created from the finalDetails object produced (see controllers/analytics)
+    - python produceCsv.py [args] creates csv files created from the finalDetails object produced (see controllers/analytics)
     - Note see the controller readmes for more explantation on each of the above scripts 
 
 
@@ -130,7 +130,7 @@ Tool for the Semantic LiDAR Fuzzing paper
     - analytics - creates csv distilations of runs 
     - extractInstances - preprocessing step scripts to seed db and create alterative label files
     - finalVisualize - creates images to visualize the results
-    - modelBasePred - preprocessing step scripts to get the 
+    - modelBasePred - scripts to get the predictions from the models
     - mutationTool - main mutation tool controller
 - data - Contains the classes that interact with the LiDAR data and repositories for mongodb
 - domain - Knowlege required for the tool, enums, constants, config, and the toolSessionManager

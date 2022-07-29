@@ -96,7 +96,7 @@ instancesWalls = {
 
 
 color_map_alt_rgb = { # rgb
-    # 0 : [0, 0, 0],
+    # 0 : [0, 0, 0], # Note this is changed to visually differentiate unlabeled vs outlier
     0 : [220, 220, 220],
     1 : [0, 0, 0],
     10: [100, 150, 245],
@@ -135,7 +135,7 @@ color_map_alt_rgb = { # rgb
 
 
 color_map_alt_bgr = { # bgr
-#   0 : [0, 0, 0],
+#   0 : [0, 0, 0], # Note this is changed to visually differentiate unlabeled vs outlier
   0 : [220, 220, 220],
   1 : [0, 0, 0],
   10: [245, 150, 100],
