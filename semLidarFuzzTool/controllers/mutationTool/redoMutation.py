@@ -73,6 +73,7 @@ def batchRecreation(batchId, sessionManager):
                 batchCount += 1
                 detailsNew["recreationId"] = details["_id"]
                 mutationDetails.append(detailsNew)
+                print(json.dumps(detailsNew, indent=4))
             else:
                 print("Could not successfully recreate {} in batch {}".format(details["_id"], batchId))
 
@@ -131,6 +132,8 @@ def mutationRecreation(mutationId, sessionManager):
         print("Could not successfully recreate {}".format(mutationId))
         exit()
     
+    print(json.dumps(detailsNew, indent=4))
+
     # Eval
 
     # Create a final data

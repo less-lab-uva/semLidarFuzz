@@ -4,21 +4,35 @@
 # ------------------------------------------
 
 
+# Original scans
 binPath="/home/garrett/Documents/data/dataset/sequences/"
-lblPath="/home/garrett/Documents/data/dataset2/sequences/"
+# Labels for those scans
+lblPath="/home/garrett/Documents/data/dataset4/sequences/"
+# Models original predictions on those scans
+predPath="/home/garrett/Documents/data/resultsBase/"
+# Full path to the mongo connect
 mongoconnect="/home/garrett/Documents/lidarTest2/mongoconnect.txt"
-saveAt="/home/garrett/Documents/lidarTest2/toolV5/controllers/mutationTool"
+# Path to model directory
+modelDir="/home/garrett/Documents"
+
+# Models to use for the run comma seperated
+models="cyl,spv,sal,sq3,pol"
+# Total count of total mutations to generate 
+count=30
+# How often evaluation will trigger
+batch=15
+
 
 # Use one of these
-mutationId="GnZmgeWHocGTvYaR9Un5Ed-ADD_ROTATE"
-batchId="Jniz6rmaXE4bPeFu6hXDFR"
+mutationId="Vp4eqHDihWWypjswh3gnVU-VEHICLE_SCALE"
+batchId="Vz6d37G4oKABGMXSpheek9"
 
 
 # ------------------------------------------
 
 
-python redoMutation.py -binPath "$binPath" -labelPath $lblPath -mdb $mongoconnect -saveAt $saveAt -mutationId $mutationId
-# python redoMutation.py -binPath "$binPath" -labelPath $lblPath -mdb $mongoconnect -saveAt $saveAt -batchId $batchId
+python semFuzzLidar.py -redoBatchId $batchId -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models
+# python semFuzzLidar.py -redoMutationId $mutationId -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models
 
 
 # ------------------------------------------
