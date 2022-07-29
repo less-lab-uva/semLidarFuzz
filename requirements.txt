@@ -1,0 +1,6 @@
+numpy==1.19.5
+open3d==0.15.2
+pymongo==4.1.1
+Pillow==8.4.0
+vispy==0.10.0
+shortuuid==1.0.9
