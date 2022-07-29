@@ -3,17 +3,13 @@
 # -------------------------------------------------------------------------------------------------------------------
 
 
-# saveDir="/media/garrett/ExtraDrive1/saving50kV3"
-# saveDir="/media/garrett/ExtraDrive1/2kTmp"
-# saveDir="/media/garrett/ExtraDrive1/2kNew"
-# saveDir="/home/garrett/Documents/lidarTest2/tmp"
-saveDir="/media/garrett/ExtraDrive1/finalCheck"
+
+saveDir="/media/garrett/ExtraDrive1/finalCheck2"
 
 
 # "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_INTENSITY" "VEHICLE_SCALE"
 # for mutation in "VEHICLE_INTENSITY"
-# for mutation in "VEHICLE_INTENSITY" "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_SCALE"
-for mutation in "VEHICLE_SCALE"
+for mutation in "VEHICLE_INTENSITY" "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_SCALE"
 do
 # -------------------------------------------------------------------------------------------------------------------
 
