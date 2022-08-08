@@ -27,6 +27,8 @@ from domain.semanticMapping import name_label_mapping
 from domain.modelConstants import Models
 
 from service.models.cylRunner import CylRunner
+from service.models.js3cCPURunner import JS3CCPURunner
+from service.models.js3cGPURunner import JS3CGPURunner
 from service.models.spvRunner import SpvRunner
 from service.models.salRunner import SalRunner
 from service.models.sq3Runner import Sq3Runner
@@ -171,6 +173,10 @@ def evalBatch(details, sessionManager,  complete, total):
             modelRunner = PolRunner(sessionManager.modelDir)
         elif model == Models.RAN.value:
             modelRunner = RanRunner(sessionManager.modelDir)
+        elif model == Models.JS3CGPU.value:
+            modelRunner = JS3CGPURunner(sessionManager.modelDir)
+        elif model == Models.JS3CCPU.value:
+            modelRunner = JS3CCPURunner(sessionManager.modelDir)
         else:
             raise ValueError("Model {} not supported!".format(model))
 

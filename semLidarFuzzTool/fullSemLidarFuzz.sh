@@ -4,7 +4,7 @@
 
 
 
-saveDir="/media/garrett/ExtraDrive1/finalCheck2"
+saveDir="/home/garrett/tmp/jsc3test"
 
 
 # "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_INTENSITY" "VEHICLE_SCALE"
@@ -50,7 +50,8 @@ do
     modelDir="/home/garrett/Documents"
 
     # Models to use for the run comma seperated
-    models="cyl,spv,sal,sq3,pol"
+    #models="cyl,spv,sal,sq3,pol"
+    models="js3c_gpu"
     # Total count of total mutations to generate 
     count=30
     # How often evaluation will trigger

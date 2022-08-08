@@ -18,6 +18,8 @@ class Models(Enum):
     SQ3 = "sq3"
     POL = "pol"
     RAN = "ran"
+    JS3CCPU = "js3c_cpu"
+    JS3CGPU = "js3c_gpu"
 
 
 # ----------------------------------------------------------
@@ -30,6 +32,8 @@ SAL_DIRECTORY_NAME = "SalsaNext"
 SQ3_DIRECTORY_NAME = "SqueezeSegV3"
 POL_DIRECTORY_NAME = "PolarSeg"
 RAN_DIRECTORY_NAME = "RandLA-Net"
+JS3CCPU_DIRECTORY_NAME = "JS3C-Net"
+JS3CGPU_DIRECTORY_NAME = "JS3C-Net"
 
 
 # ----------------------------------------------------------

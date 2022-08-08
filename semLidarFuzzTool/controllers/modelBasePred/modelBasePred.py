@@ -14,6 +14,8 @@ import argparse
 from domain.modelConstants import Models
 
 from service.models.cylRunner import CylRunner
+from service.models.js3cCPURunner import JS3CCPURunner
+from service.models.js3cGPURunner import JS3CGPURunner
 from service.models.spvRunner import SpvRunner
 from service.models.salRunner import SalRunner
 from service.models.sq3Runner import Sq3Runner
@@ -76,6 +78,10 @@ def main():
         modelRunner = PolRunner(modelBaseDir)
     elif model == Models.RAN.value:
         modelRunner = RanRunner(modelBaseDir)
+    elif model == Models.JS3CGPU.value:
+        modelRunner = JS3CGPURunner(modelBaseDir)
+    elif model == Models.JS3CCPU.value:
+        modelRunner = JS3CCPURunner(modelBaseDir)
     else:
         raise ValueError("Model {} not supported!".format(model))
 
