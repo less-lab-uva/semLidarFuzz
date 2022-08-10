@@ -165,7 +165,6 @@ def parse_args():
 
 
 def main():
-
     print("\n\n------------------------------")
     print("\n\nStarting Model Evaluation Upload\n\n")
 
@@ -181,7 +180,8 @@ def main():
     # labelBasePath = "/home/garrett/Documents/data/dataset/sequences/"
     # predBasePath = "/home/garrett/Documents/data/resultsBase/"
 
-    args = parse_args() 
+    args = parse_args()
+    models = ["cyl", "spv", "sal", "sq3", "pol", "js3c_gpu", "js3c_cpu"]
     labelBasePath = args.labels
     predBasePath = args.pred
 
@@ -190,7 +190,7 @@ def main():
     acc = {}
     iou = {}
 
-    for model in ["cyl", "spv", "sal", "sq3", "pol"]:
+    for model in models:
         acc[model] = 0
         iou[model] = 0
     
@@ -203,14 +203,14 @@ def main():
         # Get pred label / pred path
         labelPath = labelBasePath + folderNum + "/labels/"
         predPaths = {}
-        for model in ["cyl", "spv", "sal", "sq3", "pol"]:
+        for model in models:
             predPaths[model] = predBasePath + folderNum + "/" + model + "/"
 
         # Get label / pred files sort
         labelFiles = glob.glob(labelPath + "*.label")
         labelFiles = sorted(labelFiles)  
         predFilesModel = {}
-        for model in ["cyl", "spv", "sal", "sq3", "pol"]:
+        for model in models:
             predFilesModel[model] = glob.glob(predPaths[model] + "*.label")
             predFilesModel[model] = sorted(predFilesModel[model])
         
@@ -228,7 +228,7 @@ def main():
             sceneEval["points"] = pointCounts
             sceneEval["pointMetrics"] = pointMetrics
 
-            for model in ["cyl", "spv", "sal", "sq3", "pol"]:
+            for model in models:
                 sceneEval[model] = eval(labelFiles[index], predFilesModel[model][index])
                 acc[model] += sceneEval[model]["accuracy"]
                 iou[model] += sceneEval[model]["jaccard"]
@@ -244,7 +244,7 @@ def main():
 
 
     print("\n\n\nDONE ACC JAC:\n")
-    for model in ["cyl", "spv", "sal", "sq3", "pol"]:
+    for model in models:
         print(model)
         print(acc[model] / items)
         print(iou[model] / items)
