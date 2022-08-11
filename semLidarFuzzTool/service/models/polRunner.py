@@ -41,7 +41,7 @@ class PolRunner(DockerRunner):
         # Location that command needs to be run from
         modelRunDir = self.modelDir
 
-        self.runModelDocker(dataDir, predictionDir, modelRunDir, runCommand)
+        return self.runModelDocker(dataDir, predictionDir, modelRunDir, runCommand)
 
     
 

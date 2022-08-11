@@ -78,9 +78,10 @@ class DockerRunner:
         print(dockerRunCommand)
         
         # Run the docker command
-        subprocess.Popen(dockerRunCommand, shell=True).wait()
+        returnCode = subprocess.Popen(dockerRunCommand, shell=True).wait()
 
         self.removeContainer()
+        return returnCode
 
 
     """

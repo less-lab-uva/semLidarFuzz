@@ -122,7 +122,11 @@ def main():
         print("Model {}".format(model))
 
         # Predict for the current folder
-        modelRunner.run(stageSeqFolder, savePreds)
+        returnCode = modelRunner.run(stageSeqFolder, savePreds)
+        if returnCode != 0:
+            print('Non-zero exit code from docker: {}'.format(returnCode))
+            print('Exiting with same code')
+            exit(returnCode)
 
     print("\n\n\nDone")
         
