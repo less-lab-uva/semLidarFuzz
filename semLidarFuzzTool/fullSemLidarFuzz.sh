@@ -50,12 +50,11 @@ do
     modelDir="/home/garrett/Documents"
 
     # Models to use for the run comma seperated
-    #models="cyl,spv,sal,sq3,pol"
-    models="js3c_gpu"
+    models="cyl,spv,js3c_gpu,sal,sq3,pol"
     # Total count of total mutations to generate 
-    count=30
+    count=50000
     # How often evaluation will trigger
-    batch=15
+    batch=1000
 
     # Run command 
     cd controllers/mutationTool
