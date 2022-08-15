@@ -92,7 +92,9 @@ def parse_args():
         action='store_true', default=False)
 
     p.add_argument('-saveNum', help='Count to save from the top loss',
-        nargs='?', const=10, default=10)
+                   nargs='?', const=10, default=10)
+    p.add_argument('-threadCount', help='Number of threads to use for generating mutations',
+                   nargs='?', const=1, default=1)
 
     p.add_argument('-removeRandom', help='REMOVE will try to select randomly instead of iterating through assets',
         action='store_true', default=False)

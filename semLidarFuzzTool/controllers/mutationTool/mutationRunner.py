@@ -15,6 +15,7 @@ import time
 import json
 
 import multiprocessing as mp
+from multiprocessing import Pool
 
 from data.assetRepository import AssetRepository
 from data.mutationDetailsRepository import DetailsRepository
@@ -70,7 +71,7 @@ performMutation
 Performs one mutation
 Based on the mutation provided and the session
 """
-def performMutation(mutation, assetRepo, sessionManager):
+def performMutation(mutation, assetRepo, sessionManager, removeIterateNum):
 
     # Start timer for the mutation
     tic = time.perf_counter()
@@ -163,8 +164,7 @@ def performMutation(mutation, assetRepo, sessionManager):
 
         # REMOVE OPTION TO TRY ALL ASSETS
         elif(sessionManager.removeIterate and mutationsEnum.Transformation.REMOVE.name in mutationSet):
-            sessionManager.removeIterateNum += 1
-            assetRecordResult = assetRepo.getAssetsPaged(sessionManager.removeIterateNum, 1)
+            assetRecordResult = assetRepo.getAssetsPaged(removeIterateNum, 1)
 
             assetRecordList = list(assetRecordResult)
             if (len(assetRecordList) > 0):
@@ -172,7 +172,7 @@ def performMutation(mutation, assetRepo, sessionManager):
                 pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord =  assetRepo.getInstanceFromAssetRecord(assetRecord)
             # if there are no more assets to try, but haven't hit the expected number, short ciruit
             else:
-                sessionManager.expectedNum = successNum
+                return False, {'none_left_to_remove': True}
 
 
         # ONLY VEHICLE ASSETS
@@ -381,26 +381,63 @@ def generateMutationBatch(sessionManager, assetRepo):
 
     print("Starting Mutation Generation, saving at {}".format(sessionManager.stageDir))
 
-    while(batchCount < sessionManager.batchNum and successNum < sessionManager.expectedNum):
+    # Perform the Mutation
+    if sessionManager.thread_count > 1:
+        results = []
+        with Pool(sessionManager.thread_count) as pool:
+            while (batchCount < sessionManager.batchNum and successNum < sessionManager.expectedNum):
+                max_left = min(sessionManager.batchNum - batchCount, sessionManager.expectedNum - successNum)
+                for i in range(min(max_left)):
+                    # Select Mutation
+                    mutationEnum = random.choice(sessionManager.mutationsEnabled)
+                    mutation = mutationEnum.name
+                    sessionManager.removeIterateNum += 1
+                    results.append(pool.apply_async(performMutation, (mutation,
+                                                                      assetRepo,
+                                                                      sessionManager,
+                                                                      sessionManager.removeIterateNum)))
+                for result in results:
+                    success, details = result.get()
+                    attemptedNum += 1
+                    if success:
+                        batchCount += 1
+                        successNum += 1
+                        print("\n\nMutation (successful) Attempt {} [curr successful {}]"
+                              .format(attemptedNum, successNum))
+                        print(details)
+                        mutationDetails.append(details)
+                    else:
+                        print(
+                            "\n\nMutation (unsuccessful) Attempt {} [curr successful {}]"
+                                .format(attemptedNum, successNum))
+                        print(details)
+                        if 'none_left_to_remove' in details:
+                            # We have run out of items to check, short-circuiting
+                            successNum = sessionManager.expectedNum
+    else:
+        while(batchCount < sessionManager.batchNum and successNum < sessionManager.expectedNum):
 
-        # Select Mutation
-        mutationEnum = random.choice(sessionManager.mutationsEnabled)
-        mutation = mutationEnum.name
-        
-        # Perform the Mutation
-        success = False
-        success, details = performMutation(mutation, assetRepo, sessionManager)
+            # Select Mutation
+            mutationEnum = random.choice(sessionManager.mutationsEnabled)
+            mutation = mutationEnum.name
 
-        attemptedNum += 1
-        if success:
-            batchCount += 1
-            successNum += 1
-            print("\n\nMutation (successful) Attempt {} [curr successful {}]".format(attemptedNum, successNum))
-            print(details)
-            mutationDetails.append(details)
-        else:
-            print("\n\nMutation (unsuccessful) Attempt {} [curr successful {}]".format(attemptedNum, successNum))
-            print(details)
+            success = False
+            sessionManager.removeIterateNum += 1
+            success, details = performMutation(mutation, assetRepo, sessionManager, sessionManager.removeIterateNum)
+
+            attemptedNum += 1
+            if success:
+                batchCount += 1
+                successNum += 1
+                print("\n\nMutation (successful) Attempt {} [curr successful {}]".format(attemptedNum, successNum))
+                print(details)
+                mutationDetails.append(details)
+            else:
+                print("\n\nMutation (unsuccessful) Attempt {} [curr successful {}]".format(attemptedNum, successNum))
+                print(details)
+                if 'none_left_to_remove' in details:
+                    # We have run out of items to check, short-circuiting
+                    successNum = sessionManager.expectedNum
     
     return mutationDetails
 
