@@ -72,7 +72,8 @@ Performs one mutation
 Based on the mutation provided and the session
 """
 def performMutation(mutation, assetRepo, sessionManager, removeIterateNum):
-
+    if assetRepo is None:
+        assetRepo = AssetRepository(sessionManager.binPath, sessionManager.labelPath, sessionManager.mongoConnect)
     # Start timer for the mutation
     tic = time.perf_counter()
 
@@ -393,7 +394,7 @@ def generateMutationBatch(sessionManager, assetRepo):
                     mutation = mutationEnum.name
                     sessionManager.removeIterateNum += 1
                     results.append(pool.apply_async(performMutation, (mutation,
-                                                                      assetRepo,
+                                                                      None,
                                                                       sessionManager,
                                                                       sessionManager.removeIterateNum)))
                 for result in results:
