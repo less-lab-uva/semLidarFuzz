@@ -64,7 +64,7 @@ class SessionManager:
         self.labelFiles = []
         self.binFiles, self.labelFiles = fileIoUtil.getBinsLabels(self.binPath, self.labelPath)
 
-        self.threadCount = args.threadCount
+        self.threadCount = int(args.threadCount)
         print('Running on {} thread(s)'.format(self.threadCount))
 
         # ------------------------------------------
