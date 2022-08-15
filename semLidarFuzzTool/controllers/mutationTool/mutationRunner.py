@@ -382,9 +382,9 @@ def generateMutationBatch(sessionManager, assetRepo):
     print("Starting Mutation Generation, saving at {}".format(sessionManager.stageDir))
 
     # Perform the Mutation
-    if sessionManager.thread_count > 1:
+    if sessionManager.threadCount > 1:
         results = []
-        with Pool(sessionManager.thread_count) as pool:
+        with Pool(sessionManager.threadCount) as pool:
             while (batchCount < sessionManager.batchNum and successNum < sessionManager.expectedNum):
                 max_left = min(sessionManager.batchNum - batchCount, sessionManager.expectedNum - successNum)
                 for i in range(min(max_left)):
