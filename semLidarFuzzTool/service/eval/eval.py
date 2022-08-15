@@ -36,7 +36,7 @@ from service.models.polRunner import PolRunner
 from service.models.ranRunner import RanRunner
 
 import domain.config as config
- 
+
 # --------------------------------------------------------------------------
 # Constants for the ioueval evaluator
 
@@ -92,7 +92,7 @@ def evalLabels(modifiedLabel, modifiedPrediction, newPrediction):
     # Save jacc
     results["mod"]["jaccard"] = jaccMod
     results["new"]["jaccard"] = jaccNew
-    
+
     # Get percent loss
     results["accuracyChange"] = accNew - accMod
     results["jaccardChange"] = jaccNew - jaccMod
@@ -100,7 +100,7 @@ def evalLabels(modifiedLabel, modifiedPrediction, newPrediction):
     results["percentLossJac"] = results["jaccardChange"] * 100
 
     return results
-    
+
 """
 evaluateLabelPred
 
@@ -196,7 +196,7 @@ def evalBatch(details, sessionManager,  complete, total):
 
 
 
-    # Evaluate 
+    # Evaluate
     print("Eval")
 
     # Get the labels (modified ground truth)
@@ -214,25 +214,26 @@ def evalBatch(details, sessionManager,  complete, total):
     for detail in details:
         for model in sessionManager.models:
             modifiedPred[model].append(sessionManager.doneMutatedPredDir + "/" + model + "/" + detail["_id"] + ".label")
-    
+
 
     # Get the predictions made for the mutated scans
     predFiles = {}
     for model in sessionManager.models:
-        if model == Models.CYL.value or model == Models.SPV.value or model == Models.RAN.value:
+        if model == Models.CYL.value or model == Models.SPV.value or model == Models.RAN.value \
+           or model == Models.JS3CCPU.value or model == Models.JS3CGPU.value:
             predFiles[model] = glob.glob(sessionManager.resultDir + "/" + model + "/*.label")
         else:
             predFiles[model] = glob.glob(sessionManager.resultDir + "/" + model + "/sequences/00/predictions/*.label")
-        
+
         # Sort the new predictions
-        predFiles[model] = sorted(predFiles[model])    
+        predFiles[model] = sorted(predFiles[model])
 
 
     # Sort the labels, modified predictions
     labelFiles = sorted(labelFiles)
     for model in sessionManager.models:
         modifiedPred[model] = sorted(modifiedPred[model])
-    details = sorted(details, key=itemgetter('_id')) 
+    details = sorted(details, key=itemgetter('_id'))
 
 
     # Assert that we have predictions and labels for all models
@@ -243,7 +244,7 @@ def evalBatch(details, sessionManager,  complete, total):
         errorString = "ERROR: preds do not match labels,"
         for model in sessionManager.models:
             errorString += " {} {} ".format(model, len(predFiles[model]))
-        
+
         raise ValueError(errorString + ", labels {}, details {} at {}/{}".format(len(labelFiles), len(details), complete, total))
 
 
