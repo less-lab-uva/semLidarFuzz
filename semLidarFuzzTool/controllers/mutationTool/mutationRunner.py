@@ -387,7 +387,7 @@ def generateMutationBatch(sessionManager, assetRepo):
         with Pool(sessionManager.threadCount) as pool:
             while (batchCount < sessionManager.batchNum and successNum < sessionManager.expectedNum):
                 max_left = min(sessionManager.batchNum - batchCount, sessionManager.expectedNum - successNum)
-                for i in range(min(max_left)):
+                for i in range(max_left):
                     # Select Mutation
                     mutationEnum = random.choice(sessionManager.mutationsEnabled)
                     mutation = mutationEnum.name
