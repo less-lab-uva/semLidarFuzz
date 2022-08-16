@@ -4,8 +4,8 @@
 
 
 
-saveDir="/home/garrett/tmp/jsc3test"
-
+saveDir="/media/garrett/final_50k"
+mkdir $saveDir
 
 # "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_INTENSITY" "VEHICLE_SCALE"
 # for mutation in "VEHICLE_INTENSITY"
@@ -50,17 +50,20 @@ do
     modelDir="/home/garrett/Documents"
 
     # Models to use for the run comma seperated
-    models="cyl,spv,js3c_gpu,sal,sq3,pol"
+    models="cyl,spv,js3c_gpu,sal,sq3"
     # Total count of total mutations to generate 
     count=50000
     # How often evaluation will trigger
-    batch=1000
+    batch=50000
 
     # Run command 
     cd controllers/mutationTool
-    python semFuzzLidar.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models
+    if [ "$mutation" = "ADD_ROTATE" ] || [ "$mutation" = "ADD_MIRROR_ROTATE" ] ; then
+      python semFuzzLidar.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 1
+    else
+      python semFuzzLidar.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 5
+    fi
     cd ../..
-
     # -------------------------------------------------------------------------------------------------------------------s
 
     echo "Running Visulization"
