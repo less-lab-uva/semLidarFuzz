@@ -17,14 +17,13 @@ Tool for the Semantic LiDAR Fuzzing paper
 - install python3
   - sudo apt-get install python3-distutils python3-pip python3-dev python3-venv
   - Note tested with Python 3.6.9
-- cd ~
-- python3 -m venv semFuzzLidar_venv
-- source $HOME/semFuzzLidar_venv/bin/activate
-  - Note this will need to be run everytime you want to run the project
-  - Can be added to your .bashrc as an alias to make your life easier for example: alias sflv='source $HOME/semFuzzLidar_venv/bin/activate'
-- pip3 install --upgrade pip
-- pip3 install -r requirements.txt
-
+```bash
+sudo apt install python3.6-venv
+python3.6 -m venv semFuzzLidar_venv
+source semFuzzLidar_venv/bin/activate
+pip3 install --upgrade pip
+pip3 install -r requirements.txt
+```
 
 ### 2. Connect & Prepare Mongodb
 - Get a mongodb instance (Free 500 mb instance provided at mongodb atlas)
