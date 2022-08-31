@@ -9,6 +9,7 @@ import sys
 from collections import defaultdict
 from itertools import combinations
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 
 def parse_args():
@@ -50,6 +51,15 @@ def set_bar_text(ax, bar, zero_height=0.8):
     ax.text(bar.get_x() + bar.get_width() * 0.2, y, label, va='bottom', rotation=90)
 
 
+def set_bar_text_no_log(ax, bar, zero_height=0.8):
+    height = bar.get_height()
+    label = '%0.2f' % height
+    for _ in range(1 * (3 - len(label))):
+        label = ' ' + label
+    y = zero_height if height == 0 else height + .05
+    ax.text(bar.get_x() + bar.get_width() * 0.2, y, label, va='bottom')
+
+
 def format_amount(amount, total):
     # return '%d (%d\\%%)' % (amount, 100 * amount / total) if amount > 0 else '---'
     return '%d' % amount if amount > 0 else '---'
@@ -68,11 +78,11 @@ def fix_names(combo, model_name):
 
 if __name__ == '__main__':
     print("\n\n------------------------------")
-    print("\n\nStarting Mutation CSV Generator\n\n")
+    print("\n\nStarting Figure Generator\n\n")
     os.makedirs('figures', exist_ok=True)
     args = parse_args()
     full_data_dir = args.full_data
-    mutation_folders = list(glob.glob(full_data_dir + '/*'))
+    mutation_folders = list(glob.glob(full_data_dir + os.sep + '*'))
     acc_failure_counts = {}
     jacc_failure_counts = {}
     acc_overlap_counts = {}
@@ -98,6 +108,7 @@ if __name__ == '__main__':
         'bucket_5': '(4, 5]',
         'bucket_6': '(5, 100]',
     }
+    model_order = ['cyl', 'spv', 'js3c_gpu', 'sal', 'spv']
     model_name = {
         'cyl': 'Cylinder3D',
         'spv': 'SPVNAS',
@@ -112,24 +123,34 @@ if __name__ == '__main__':
         'sal': 'Salsa',
         'sq3': 'Squeeze'
     }
+    mutation_count = {}
+    duplicate_counts = {}
+    acc_overlap_ignoring_salsa_and_squeeze = {mut_name: 0 for mut_name in mut_order}
+    jacc_overlap_ignoring_salsa_and_squeeze = {mut_name: 0 for mut_name in mut_order}
     all_combos = getModelComboKeys(model_short_name.keys())
     all_combos = [fix_names(combo, model_short_name) for combo in all_combos]
     acc_overlap_by_group = {i+1: defaultdict(int) for i in range(len(model_short_name))}
     jacc_overlap_by_group = {i+1: defaultdict(int) for i in range(len(model_short_name))}
     acc_overlap_2_suts = {model: defaultdict(int) for model in model_short_name}
     jacc_overlap_2_suts = {model: defaultdict(int) for model in model_short_name}
+    total_time = {}
+    sut_time = {}
+    time_per_model = {model: defaultdict(int) for model in model_short_name}
     for mut_fol in mutation_folders:
-        mut_name = mut_fol[mut_fol.rfind('/')+1:-20]  # the timestamp at the end is 20 chars, remove
+        if not os.path.isdir(mut_fol):
+            continue
+        print('Looking in folder:', mut_fol)
+        mut_name = mut_fol[mut_fol.rfind(os.sep)+1:-20]  # the timestamp at the end is 20 chars, remove
         mut_names.append(mut_name)
         print('Gathering data for', normalize_name(mut_name))
 
-        final_data_file = glob.glob(mut_fol + '/**/finalData.json')[0]
+        final_data_file = glob.glob(mut_fol + '%s**%sfinalData.json' % (os.sep, os.sep))[0]
         print("Getting data from {}".format(final_data_file))
         # Opening JSON file
         f = open(final_data_file)
         # returns JSON object as a dictionary
         data = json.load(f)
-
+        mutation_count[mut_name] = data['count']
         # Get mutation keys and bucket keys
         mutations = data["mutations"]
         bucketKeys = list(sorted(data["buckets"], reverse=False))  # ensure they are in sorted order, highest to lowest
@@ -142,18 +163,38 @@ if __name__ == '__main__':
             modelsInvariant = models
         elif not models == modelsInvariant:
             raise RuntimeError('The data in this folder contains differing models per mutation, aborting')
+        total_time[mut_name] = data['seconds']
+        time_per_model[mut_name] = data['modelTime']
+        sut_time[mut_name] = sum(data['modelTime'].values())
         modelCombos = getModelComboKeys(models)
         acc_failure_counts[mut_name] = {model: {} for model in models}
         jacc_failure_counts[mut_name] = {model: {} for model in models}
         acc_overlap_counts[mut_name] = defaultdict(int)
         jacc_overlap_counts[mut_name] = defaultdict(int)
         for mutationKey in mutations:  # each of the files only actually has one mutation
+            duplicate_counts[mut_name] = data[mutationKey]['duplicates']
             acc_data = data[mutationKey]["accuracy"]
             jacc_data = data[mutationKey]["jaccard"]
+            acc_total_per_model = {}
+            jacc_total_per_model = {}
             for model in models:
+                acc_total = 0
+                jacc_total = 0
                 for bucket in bucketKeys:
                     acc_failure_counts[mut_name][model][bucket] = acc_data[bucket]['total_' + model]
+                    acc_total += acc_data[bucket]['total_' + model]
                     jacc_failure_counts[mut_name][model][bucket] = jacc_data[bucket]['total_' + model]
+                    jacc_total += jacc_data[bucket]['total_' + model]
+                acc_total_per_model[model] = acc_total
+                jacc_total_per_model[model] = jacc_total
+            if len(set(acc_total_per_model.values())) != 1:
+                raise RuntimeError('The data in this folder contains differing number of acc results per model, aborting')
+            if len(set(jacc_total_per_model.values())) != 1:
+                raise RuntimeError('The data in this folder contains differing number of acc results per model, aborting')
+            if acc_total_per_model == jacc_total_per_model:
+                mutation_count[mut_name] = list(acc_total_per_model.values())[0]
+            else:
+                raise RuntimeError('The data in this folder contains differing results for acc and jacc, aborting')
             last_bucket = bucketKeys[-1]
             for combo, amount in acc_data[last_bucket]['model_overlap'].items():
                 adj = combo.replace('js3c_', 'js3c-')
@@ -164,6 +205,8 @@ if __name__ == '__main__':
                 count = len(suts)
                 acc_overlap_counts[mut_name][count] += amount
                 acc_overlap_by_group[count][fix_names(combo, model_short_name)] += amount
+                if count == 2 and ('sal' in combo and 'sq3' in combo):
+                    acc_overlap_ignoring_salsa_and_squeeze[mut_name] += amount
                 if count >= 2:
                     for sut1, sut2 in itertools.combinations(suts, 2):
                         acc_overlap_2_suts[sut1][sut2] += amount
@@ -178,12 +221,15 @@ if __name__ == '__main__':
                 count = len(suts)
                 jacc_overlap_counts[mut_name][count] += amount
                 jacc_overlap_by_group[count][fix_names(combo, model_short_name)] += amount
+                if count == 2 and ('sal' in combo and 'sq3' in combo):
+                    jacc_overlap_ignoring_salsa_and_squeeze[mut_name] += amount
                 if count >= 2:
                     for sut1, sut2 in itertools.combinations(suts, 2):
                         jacc_overlap_2_suts[sut1][sut2] += amount
                         jacc_overlap_2_suts[sut2][sut1] += amount
 
     mut_names = [mut_name for mut_name in mut_order if mut_name in mut_names]  # reorder to be consistent
+    longest_mut_name_len = max([len(normalize_name(mut_name)) for mut_name in mut_names])
     acc_all_failure_counts = {model: {} for model in modelsInvariant}
     jacc_all_failure_counts = {model: {} for model in modelsInvariant}
     for model in modelsInvariant:
@@ -199,8 +245,8 @@ if __name__ == '__main__':
             jacc_all_overlap_counts[count] += amount
 
     print('Generating figures for all mutations')
-    hatches = ['/', '\\', 'o', 'x', '|', '-', '.']
-    colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink']
+    hatches = ['x', '*', '.', '-', '/', '+', '\\']
+    colors = ['tab:cyan', 'tab:olive', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:red']
     row_count = 8
     subfig_count = (len(mut_names) + 1)
     column_count = int(math.ceil(subfig_count / row_count))
@@ -226,7 +272,7 @@ if __name__ == '__main__':
         print('Generating figures for', title)
         subfig.suptitle(title, fontweight='bold')
         ind_fig = plt.figure(figsize=(12.8, 9.6))
-        ind_fig.suptitle(title, fontweight='bold')
+        # ind_fig.suptitle(title, fontweight='bold')
         ind_axes = ind_fig.subplots(1, 2, sharey=True)
         # ylim_top = None
         for in_idx, (name, all_failure_counts) in enumerate(zip(['Accuracy', 'Jaccard'], cur_counts)):
@@ -268,7 +314,7 @@ if __name__ == '__main__':
             for bar in bars:
                 set_bar_text(ax, bar)
             ax.set_ylabel('Number of Failures (Log)')
-            ax.set_xlabel(name + ' drop threshold (%)')
+            ax.set_xlabel(name)
             # ax.set_ylim(bottom=0.5, top=ylim_top)
             ax.set_title(name)
             # _, ylim_top = ax.get_ylim()
@@ -512,3 +558,76 @@ if __name__ == '__main__':
         print('----- %s SUT Voting Together -----' % long)
         print(vote_together_table.replace('DATA', tog_string).replace('SHORT', short).replace('TITLE', long))
 
+    print('----- False Positive Rate ignoring Sal and Sq3 together')
+    cur_counts = [acc_all_overlap_counts, jacc_all_overlap_counts]
+    cur_ignore = [acc_overlap_ignoring_salsa_and_squeeze, jacc_overlap_ignoring_salsa_and_squeeze]
+    for counts, (ignore, name) in zip(cur_counts, zip(cur_ignore, ['Accuracy', 'Jaccard'])):
+        total = sum(counts.values())
+        new_single = counts[1] + sum(ignore.values())
+        print('New True Positive Rate for V=2 under %s metric: %d/%d (%d%%)' %
+              (name, new_single, total, round(100*new_single / total)))
+
+    print('----- Timing Information -----')
+    timing_table = '''
+\\begin{table*}[htbp]
+\\caption{Time taken for SUT and Tool per mutation (seconds)}
+    \\centering
+    \\begin{tabular}{|r|c|c|c|c|c|c|c|}
+    \\hline
+    DATA
+    \\end{tabular}
+    \\label{tab:time_taken}
+\\end{table*}
+    '''
+    time_string = '~'
+    for mut_name in mut_order:
+        time_string += ' & ' + normalize_name(mut_name)
+    time_string += '\\\\ \\hline\n'
+    for model in model_order:
+        time_string += model_name[model]
+        for mut_name in mut_order:
+            time_string += ' & %0.2f' % (time_per_model[mut_name][model] / mutation_count[mut_name])
+        time_string += '\\\\ \\hline\n'
+    time_string += '\hline\n Generation'
+    generation_times = []
+    labels = ['']
+    for mut_name in mut_order:
+        generation_time = (total_time[mut_name] - sut_time[mut_name]) / mutation_count[mut_name]
+        generation_times.append(generation_time)
+        labels.append(normalize_name(mut_name))
+        time_string += ' & %0.2f' % generation_time
+    labels.append('')
+    time_string += '\\\\ \\hline\n'
+    # ind_fig = plt.figure(figsize=(12.8, 6.2))
+    ind_fig = plt.figure()
+    ind_fig.suptitle('Average Time to Generate per Mutation', fontweight='bold')
+    ax = plt.gca()
+    X = np.arange(len(mut_order))
+    bars = ax.bar(X, generation_times, color=colors[:len(generation_times)], hatch=hatches[:len(generation_times)])
+    for bar in bars:
+        set_bar_text_no_log(ax, bar)
+    # https://stackoverflow.com/questions/63723514/userwarning-fixedformatter-should-only-be-used-together-with-fixedlocator
+    ticks_loc = ax.get_xticks().tolist()
+    ax.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
+    ax.set_xticklabels(labels, rotation=15)
+    ax.set_xlabel('Mutation')
+    ax.set_ylabel('Average Time per Test Case (s)')
+    ind_fig.tight_layout()
+    ind_fig.savefig('figures/time_per_mutation.png', bbox_inches='tight', dpi=100)
+    print(timing_table.replace('DATA', time_string))
+
+    print('----- Average Time per SUT -----')
+    for model in model_order:
+        print('%s: %0.2f seconds' % (model_name[model].rjust(20, ' '), sum([time_per_model[mut_name][model] for mut_name in mut_names]) / sum([mutation_count[mut_name] for mut_name in mut_names])))
+    print()
+
+    print('----- Average Time per Mutation -----')
+    for mut_name in mut_order:
+        print('%s: %0.2f seconds' % (normalize_name(mut_name).rjust(longest_mut_name_len, ' '),
+                                     (total_time[mut_name] - sut_time[mut_name]) / mutation_count[mut_name]))
+    print()
+
+    print('----- Duplicate Counts -----')
+    for mut_name in mut_order:
+        print('%s: %d' % (normalize_name(mut_name).rjust(longest_mut_name_len, ' '), duplicate_counts[mut_name]))
+    print()
