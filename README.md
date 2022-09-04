@@ -1,6 +1,6 @@
-# Semantic LiDAR Fuzzer
+# Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems
 
-Tool for the Semantic LiDAR Fuzzing paper
+Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems
 
 ---
 
@@ -98,30 +98,6 @@ pip3 install -r requirements.txt
 
 ---
 
-## Tool Diagrams
-
-### Pre Processing, Asset Selection
-![Asset Selection](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/AssetSelection.jpg)
-
-### Pre Processing, Original Model Predictions
-![Orginal Model Predictions](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/OriginalPredictions.jpg)
-
-### Test Case Generation
-![Test Case Generation](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/TestCaseGeneration.jpg)
-
-### Evaluation
-![Evaluation](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/Evaluation.jpg)
-
-### Overview
-![Overview](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/Pipeline.jpg)
-
-### Component Flow Overview SemFuzz
-![Eval File System](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/ComponentFlowSemFuzz.jpg)
-
-### Eval File System Dataflow
-![Eval File System](https://github.com/GarrettChristian/lidarTest2/blob/main/diagrams/FileSystemEvalDataFlow.jpg)
-
-
 ---
 ## Project Structure
 
@@ -182,21 +158,14 @@ pip3 install -r requirements.txt
 - GitHub: https://github.com/mit-han-lab/spvnas
 - Required Torch Sparse (version 1.4.0 used) Github: https://github.com/mit-han-lab/torchsparse
 
+### JS3C-Net
+- GitHub: https://github.com/yanx27/JS3C-Net
+
 ### SalsaNext
 - GitHub: https://github.com/slawomir-nowaczyk/SalsaNext
 
 ### SqueezeSegV3
 - GitHub: https://github.com/chenfengxu714/SqueezeSegV3
-
-### PolarSeg
-- GitHub: https://github.com/GarrettChristian/PolarSeg
-
-### RandNet-LA
-- GitHub: https://github.com/QingyongHu/RandLA-Net
-
-### UVA Less Lab
-- https://less-lab-uva.github.io/
-
 
 
 ---
