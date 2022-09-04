@@ -58,11 +58,6 @@ def eval(label_file, pred_file):
     print(label_file)
     print(pred_file)
 
-    # label_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/000000Act.label"
-    # pred_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/000000Cyl.label"
-    # label_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/bus.label"
-    # pred_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/busCy.label"
-
 
     numClasses = len(learning_map_inv)
 
@@ -140,7 +135,7 @@ def eval(label_file, pred_file):
 Connect to mongodb 
 """
 def mongoConnect():
-    configFile = open("/home/garrett/Documents/lidarTest2/mongoconnect.txt", "r")
+    configFile = open(os.environ['MONGO_CONNECT'], "r")
     mongoUrl = configFile.readline()
     configFile.close()
     
@@ -154,12 +149,12 @@ def parse_args():
         description='Model Runner')
     p.add_argument("-labels", 
         help="Path to the labels", 
-        nargs='?', const="/home/garrett/Documents/data/dataset/sequences/", 
-        default="/home/garrett/Documents/data/dataset/sequences/")
+        nargs='?', const="",
+        default="")
     p.add_argument("-pred", 
         help="Path to the predictions made by the tools", 
-        nargs='?', const="/home/garrett/Documents/data/resultsBase/", 
-        default="/home/garrett/Documents/data/resultsBase/")
+        nargs='?', const="",
+        default="")
     
     return p.parse_args()
 
@@ -172,13 +167,6 @@ def main():
     mdb = mongoConnect()
     mdbCol = mdb["base_accuracy3"]
     print("Connected")
-
-
-    # label_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/bus.label"
-    # pred_file = "/Users/garrettchristian/DocumentsDesktop/uva21/summerProject/lidarTest2/eval/busCy.label"
-
-    # labelBasePath = "/home/garrett/Documents/data/dataset/sequences/"
-    # predBasePath = "/home/garrett/Documents/data/resultsBase/"
 
     args = parse_args()
     models = ["cyl", "spv", "sal", "sq3", "pol", "js3c_gpu", "js3c_cpu"]

@@ -5,10 +5,10 @@
 
 # Options
 
-batchId="B9uvFtRe3BRe4FtPeDgzjT"
+batchId=""
 
-mongoconnect="/home/garrett/Documents/lidarTest2/mongoconnect.txt"
-saveAt="/home/garrett/Documents/lidarTest2/toolV5/controllers/analytics"
+mongoconnect=$MONGO_CONNECT
+saveAt="."
 
 # -------------------------------------------------------------------------------------------------------------------
 

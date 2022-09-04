@@ -4,30 +4,21 @@
 # ------------------------------------------
 
 
-bins="/home/garrett/Documents/data/dataset/sequences/"
-stage="/home/garrett/Documents/data/tmp/dataset/sequences/00/velodyne/"
-pred="/home/garrett/Documents/data/resultsBase/"
-# model="sq3"
-# model="js3c_gpu"
-# model=dar
+bins=$BIN_PATH
+stage=$STAGE_PATH
+pred=$PRED_PATH
 
-# ------------------------------------------
-
-# model="js3c_gpu"
-# python modelBasePred.py -bins $bins -stage $stage -pred $pred -model $model
-
-# because the model sometimes runs out of memory, keep trying
-model="js3c_cpu"
-until python modelBasePred.py -bins $bins -stage $stage -pred $pred -model $model
+for model in  "cyl" "spv" "js3c_gpu" "sal" "sq3"
 do
-  echo "Trying again"
+  until python modelBasePred.py -bins $bins -stage $stage -pred $pred -model $model
+  do
+    echo "Trying again"
+  done
+
 done
 
 # ------------------------------------------
 
-
-# model="ran"
-# python modelBasePred.py -bins $bins -stage $stage -pred $pred -model $model
 
 
 

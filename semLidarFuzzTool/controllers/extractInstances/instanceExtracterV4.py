@@ -347,12 +347,12 @@ def parse_args():
         description='Model Runner')
     p.add_argument("-binPath", 
         help="Path to the semanticKITTI sequences", 
-        nargs='?', const="/home/garrett/Documents/data/dataset/sequences/", 
-        default="/home/garrett/Documents/data/dataset/sequences")
+        nargs='?', const="",
+        default="")
     p.add_argument("-mdb", 
         help="Path to the mongo connect file", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
     p.add_argument("-saveAt", 
         help="Where to save the mutation results", 
         nargs='?', const=os.getcwd(), 

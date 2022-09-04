@@ -31,20 +31,20 @@ def parse_args():
         description='Model Runner')
     p.add_argument("-bins", 
         help="Path to the scenes", 
-        nargs='?', const="/home/garrett/Documents/data/dataset/sequences/", 
-        default="/home/garrett/Documents/data/dataset/sequences/")
+        nargs='?', const="",
+        default="")
     p.add_argument("-stage", 
         help="Path to the stage location", 
-        nargs='?', const="/home/garrett/Documents/data/tmp/dataset/sequences/00/velodyne/", 
-        default="/home/garrett/Documents/data/tmp/dataset/sequences/00/velodyne/")
+        nargs='?', const="",
+        default="")
     p.add_argument("-pred", 
         help="Path to save the predictions made by the tools", 
-        nargs='?', const="/home/garrett/Documents/data/resultsBase/", 
-        default="/home/garrett/Documents/data/resultsBase/")
+        nargs='?', const="",
+        default="")
     p.add_argument("-modelDir", 
         help="Path to the base model directory", 
-        nargs='?', const="/home/garrett/Documents", 
-        default="/home/garrett/Documents")
+        nargs='?', const="",
+        default="")
     p.add_argument("-model", 
         help="Model name", 
         nargs='?', const="sq3", 

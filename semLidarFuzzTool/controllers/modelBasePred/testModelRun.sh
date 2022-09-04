@@ -5,14 +5,9 @@
 # Params
 
 
-data="/home/garrett/Documents/data/tmp/dataset"
-pred="/home/garrett/Documents/data/out"
+data=$BIN_PATH
+pred=$PRED_PATH
 model="cyl"
-model="spv"
-model="sal"
-model="sq3"
-model="pol"
-# model="ran"
 
 
 # ------------------------------------------

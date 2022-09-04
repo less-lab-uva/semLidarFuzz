@@ -4,7 +4,7 @@
 
 
 
-saveDir="/media/garrett/final_50k"
+saveDir=$SAVE_DIR
 mkdir $saveDir
 
 # "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_INTENSITY" "VEHICLE_SCALE"
@@ -39,18 +39,18 @@ do
     echo "Running Mutation Generation & Evaluation"
 
     # Original scans
-    binPath="/home/garrett/Documents/data/dataset/sequences/"
+    binPath=$BIN_PATH
     # Labels for those scans
-    lblPath="/home/garrett/Documents/data/dataset4/sequences/"
+    lblPath=$LABEL_PATH
     # Models original predictions on those scans
-    predPath="/home/garrett/Documents/data/resultsBase/"
+    predPath=$PRED_PATH
     # Full path to the mongo connect
-    mongoconnect="/home/garrett/Documents/lidarTest2/mongoconnect.txt"
+    mongoconnect=$MONGO_CONNECT
     # Path to model directory
-    modelDir="/home/garrett/Documents"
+    modelDir=$MODEL_DIR
 
     # Models to use for the run comma seperated
-    models="cyl,spv,js3c_gpu,sal,sq3"
+    models=$MODELS
     # Total count of total mutations to generate 
     count=50000
     # How often evaluation will trigger

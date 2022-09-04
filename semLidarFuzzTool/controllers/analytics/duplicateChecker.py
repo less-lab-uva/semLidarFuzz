@@ -79,8 +79,8 @@ def parse_args():
         nargs='?', const=None, default=None)
     p.add_argument("-mdb", 
         help="Path to the mongo connect file", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
     
     return p.parse_args()
 

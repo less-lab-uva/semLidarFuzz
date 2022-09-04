@@ -279,15 +279,15 @@ def parse_args():
         description='Model Runner')
     p.add_argument("-data", 
         help="Path to the data directory produced by the tool", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/toolV5/data/", 
-        default="/home/garrett/Documents/lidarTest2/toolV5/data/")
+        nargs='?', const="",
+        default="")
     p.add_argument("-id", 
         help="Id to the final data to create the report for", 
         nargs='?', const=None, default=None)
     p.add_argument("-mdb", 
         help="Path to the mongo connect file", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
     p.add_argument("-saveAt", 
         help="Where to save the mutation results", 
         nargs='?', const=os.getcwd(), 

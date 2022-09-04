@@ -32,8 +32,8 @@ def parse_args():
         help="Path to the save location from the predictions")
     p.add_argument("-modelDir", 
         help="Path to the base model directory", 
-        nargs='?', const="/home/garrett/Documents", 
-        default="/home/garrett/Documents")
+        nargs='?', const="",
+        default="")
     p.add_argument("-model", 
         help="Model abreviation", 
         nargs='?', const="sq3", 

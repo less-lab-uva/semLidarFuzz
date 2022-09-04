@@ -62,8 +62,8 @@ def parse_args():
 
     p.add_argument("-mdb", 
         help="Path to the connection string for mongo", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
 
     # Tool configurable params
     p.add_argument("-saveAt", 

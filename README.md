@@ -9,14 +9,13 @@ Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Syste
 
 ### 0. System Requirements
 - Ubuntu (experiments performed on Ubuntu 18.04)
-- Nvidia GPU (experiments performed with GeForce GTX 1080 Ti GPU)
-- osmesa (For visualizer) installed https://pyrender.readthedocs.io/en/latest/install/index.html
+- Nvidia GPU (experiments performed with NVIDIA TITAN RTX GPU)
 
 
 ### 1. Set up Python Virtual Environment
 - install python3
   - sudo apt-get install python3-distutils python3-pip python3-dev python3-venv
-  - Note tested with Python 3.6.9
+  - Experiments run with with Python 3.6.9
 ```bash
 sudo apt install python3.6-venv
 python3.6 -m venv semFuzzLidar_venv
@@ -64,20 +63,8 @@ pip3 install -r requirements.txt
 
 
 ### 4. Set up SUTs
-- Create a directory to serve as the base of all your models
-- Clone all model Dockers you'd like to utilize into the same directory 
-- Follow the setup instructions found in their readme's
-
-| Model | Abbreviation | Rank with code | Rank | Fork |
-| ----- | ------------ | -------------- | ----------------- | ---- |
-| Cylinder3D | cyl | 1 | 3 | https://github.com/GarrettChristian/Cylinder3D |
-| SPVNAS | spv | 2 | 4 | https://github.com/GarrettChristian/spvnas |
-| SalsaNext | sal | 5 | 11 | https://github.com/GarrettChristian/SalsaNext |
-| SqueezeSegV3 | sq3 | 7 | 15 | https://github.com/GarrettChristian/SqueezeSegV3 |
-| PolarSeg | pol | 8 | 20 | https://github.com/GarrettChristian/PolarSeg |
-| RandLA-Net | ran | 9 | 21 | https://github.com/GarrettChristian/RandLA-Net |
-
-
+Directions for setting up from source will be provided with full release.
+However, for anonymization, until then please use the following Docker containers:
 
 
 ---

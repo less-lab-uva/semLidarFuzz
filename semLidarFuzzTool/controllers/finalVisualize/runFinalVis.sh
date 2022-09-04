@@ -5,15 +5,12 @@
 
 # Options
 
-data="/home/garrett/Documents/data/dataset/sequences"
-labels="/home/garrett/Documents/data/dataset4/sequences"
-predPath="/home/garrett/Documents/data/resultsBase"
-# toolData="/home/garrett/Documents/lidarTest2/toolV5/output/"
-# toolData="/media/garrett/ExtraDrive1/output/"
-toolData="/media/garrett/ExtraDrive1/2kwed/ADD_MIRROR_ROTATE_2022_07_25-18_48_35/output/"
-mongoconnect="/home/garrett/Documents/lidarTest2/mongoconnect.txt"
-# saveAt="/home/garrett/Documents/lidarTest2/toolV5/output"
-saveAt="/media/garrett/ExtraDrive1/output"
+data=$BIN_PATH
+labels=$LABEL_PATH
+predPath=$PRED_PATH
+toolData="ADD_MIRROR_ROTATE.../output/" # Edit with desired location
+mongoconnect=$MONGO_CONNECT
+saveAt="."
 
 
 # -------------------------------------------------------------------------------------------------------------------

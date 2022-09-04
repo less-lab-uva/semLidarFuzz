@@ -4,8 +4,8 @@
 # ------------------------------------------
 
 
-labelBasePath="/home/garrett/Documents/data/dataset/sequences/"
-predBasePath="/home/garrett/Documents/data/resultsBase/"
+labelBasePath=$LABEL_PATH
+predBasePath=$PRED_PATH
 
 
 # ------------------------------------------

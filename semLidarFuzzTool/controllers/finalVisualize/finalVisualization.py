@@ -299,24 +299,24 @@ def parse_args():
         description='Model Runner')
     p.add_argument("-binPath", 
         help="Path to the semanticKITTI sequences", 
-        nargs='?', const="/home/garrett/Documents/data/dataset/sequences/", 
-        default="/home/garrett/Documents/data/dataset/sequences")
+        nargs='?', const="",
+        default="")
     p.add_argument("-labelPath", 
         help="Path to the ground truth label files", 
-        nargs='?', const="/home/garrett/Documents/data/dataset4/sequences/", 
-        default="/home/garrett/Documents/data/dataset4/sequences")
+        nargs='?', const="",
+        default="")
     p.add_argument("-predPath", 
         help="Path to the ground truth label files", 
-        nargs='?', const="/home/garrett/Documents/data/dataset4/sequences/", 
-        default="/home/garrett/Documents/data/dataset4/sequences")
+        nargs='?', const="",
+        default="")
     p.add_argument("-toolOutputPath", 
         help="Path to the data directory produced by the tool", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/toolV5/output/", 
-        default="/home/garrett/Documents/lidarTest2/toolV5/output")
+        nargs='?', const="",
+        default="")
     p.add_argument("-mdb", 
         help="Path to the mongo connect file", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
     p.add_argument("-saveAt", 
         help="Where to save the mutation results", 
         nargs='?', const=os.getcwd(), 

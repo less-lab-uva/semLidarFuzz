@@ -25,28 +25,28 @@ def parse_args():
     # Required params
     p.add_argument("-binPath", 
         help="Path to the sequences folder of LiDAR scan bins", 
-        nargs='?', const="/home/garrett/Documents/data/dataset/sequences/", 
-        default="/home/garrett/Documents/data/dataset/sequences")
+        nargs='?', const="",
+        default="")
 
     p.add_argument("-labelPath", 
         help="Path to the sequences label files should corrispond with velodyne", 
-        nargs='?', const="/home/garrett/Documents/data/dataset2/sequences/", 
-        default="/home/garrett/Documents/data/dataset2/sequences")
+        nargs='?', const="",
+        default="")
 
     p.add_argument("-predPath", 
         help="Path to the prediction label files created by the models, should corrispond with velodyne", 
-        nargs='?', const="/home/garrett/Documents/data/resultsBase/", 
-        default="/home/garrett/Documents/data/resultsBase")
+        nargs='?', const="",
+        default="")
 
     p.add_argument("-mdb", 
         help="Path to the connection string for mongo", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
 
     p.add_argument("-modelDir", 
         help="Path to the directory where the models are saved", 
-        nargs='?', const="/home/garrett/Documents/lidarTest2/mongoconnect.txt", 
-        default="/home/garrett/Documents/lidarTest2/mongoconnect.txt")
+        nargs='?', const="",
+        default="")
 
     p.add_argument('-mutation', 
         help='mutations to perform comma seperated example: ADD_ROTATE,ADD_MIRROR_ROTATE or ADD_ROTATE defaults to ADD_ROTATE',
@@ -67,7 +67,7 @@ def parse_args():
 
     # Tool configurable params
     p.add_argument("-saveAt", 
-        help="Location to save the tool output example: /media/garrett/ExtraDrive1", 
+        help="Location to save the tool output",
         nargs='?', const=os.getcwd(), 
         default=os.getcwd())
 

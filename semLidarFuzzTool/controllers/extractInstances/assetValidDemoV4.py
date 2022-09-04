@@ -413,7 +413,7 @@ def main():
     print("\n\n------------------------------")
     print("\n\nStarting open3D viewer\n\n")
 
-    path = "/home/garrett/Documents/data/dataset/sequences/"
+    path = os.environ['BIN_PATH']
 
     print("Parsing {} :".format(path))
 

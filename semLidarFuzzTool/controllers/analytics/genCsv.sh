@@ -6,20 +6,16 @@
 # Options
 
 # Where the final data json will come from
-# Directory that contains
-toolData="/home/garrett/Documents/lidarTest2/toolV5/output/"
-# or Mongodb id
-batchId="QeEYxCFcfhqtwgfnapFDXM"
+# Directory that contains the final output
+toolData=""
+# batch id to process
+batchId=""
 
-mongoconnect="/home/garrett/Documents/lidarTest2/mongoconnect.txt"
-saveAt="/home/garrett/Documents/lidarTest2/toolV5/output"
+mongoconnect=$MONGO_CONNECT
 
 # -------------------------------------------------------------------------------------------------------------------
 
-# Run command 
-
-# python produceCsv.py -data "$toolData" -mdb "$mongoconnect" -saveAt $saveAt
-# python produceCsv.py -id "$dataId" -mdb "$mongoconnect" -saveAt $saveAt
+# Run command
 python produceCsv.py -id "$batchId" -mdb "$mongoconnect"
 
 # -------------------------------------------------------------------------------------------------------------------
