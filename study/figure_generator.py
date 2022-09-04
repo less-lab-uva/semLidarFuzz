@@ -8,9 +8,13 @@ import os
 import sys
 from collections import defaultdict
 from itertools import combinations
+
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
+from matplotlib.transforms import ScaledTranslation
+
 
 def parse_args():
     p = argparse.ArgumentParser(
@@ -38,6 +42,8 @@ def normalize_name(mut_name):
     parts = mut_name.split('_')
     new_name = ''
     for part in parts:
+        if part == 'SCENE':
+            continue
         new_name += part[0] + part[1:].lower() + ' '
     return new_name[:-1]
 
@@ -49,6 +55,15 @@ def set_bar_text(ax, bar, zero_height=0.8):
         label = ' ' + label
     y = zero_height if height == 0 else height * 1.02  # mult becomes add in log scale
     ax.text(bar.get_x() + bar.get_width() * 0.2, y, label, va='bottom', rotation=90)
+
+
+def set_barh_text(ax, bar, zero_height=0.8, bar_height_factor=0.1):
+    width = bar.get_width()
+    label = str(int(width))
+    for _ in range(1 * (3 - len(label))):
+        label = ' ' + label
+    x = zero_height if width == 0 else width * 1.02  # mult becomes add in log scale
+    ax.text(x, bar.get_y() + bar.get_height() * bar_height_factor, label, va='bottom')
 
 
 def set_bar_text_no_log(ax, bar, zero_height=0.8):
@@ -244,6 +259,10 @@ if __name__ == '__main__':
         for count, amount in jacc_overlap_counts[mut_name].items():
             jacc_all_overlap_counts[count] += amount
 
+    # https://stackoverflow.com/questions/3899980/how-to-change-the-font-size-on-a-matplotlib-plot
+    font = {'weight': 'bold', 'size': 14}
+
+    matplotlib.rc('font', **font)
     print('Generating figures for all mutations')
     hatches = ['x', '*', '.', '-', '/', '+', '\\']
     colors = ['tab:cyan', 'tab:olive', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:red']
@@ -299,6 +318,62 @@ if __name__ == '__main__':
     fig.savefig('figures/failure_counts.png', dpi=100)
     plt.close(fig)
 
+    print('Generating figures for all mutations horiz')
+    fig = plt.figure(figsize=(12, 24), constrained_layout=True)
+    # fig, axes = plt.subplots(row_count, column_count)
+    subfigs = fig.subfigures(row_count, column_count, wspace=0.05, hspace=0.05, squeeze=False)
+    X = -np.arange((len(bucketKeysInvariant) - bucket_offset))
+    for sub_idx in range(0, subfig_count):
+        mut_ind = sub_idx
+        row = sub_idx // column_count
+        column = sub_idx % column_count
+        subfig = subfigs[row, column]
+        axes = subfig.subplots(1, 2, sharey=True)
+        if mut_ind < len(mut_names):
+            mut_name = mut_names[mut_ind]
+            title = normalize_name(mut_name)
+            cur_counts = [acc_failure_counts[mut_name], jacc_failure_counts[mut_name]]
+        else:  # do total
+            title = 'Total'
+            cur_counts = [acc_all_failure_counts, jacc_all_failure_counts]
+        print('Generating figures for', title)
+        subfig.suptitle(title, fontweight='bold')
+        ind_fig = plt.figure(figsize=(16, 10))
+        # ind_fig.suptitle(title, fontweight='bold')
+        ind_axes = ind_fig.subplots(1, 2)
+        # ylim_top = None
+        for in_idx, (name, all_failure_counts) in enumerate(zip(['Accuracy', 'Jaccard'], cur_counts)):
+            # Bar chart style adapted from https://www.tutorialspoint.com/matplotlib/matplotlib_bar_plot.htm
+            for ax in [axes[in_idx], ind_axes[in_idx]]:
+                for index, model in enumerate(modelsInvariant):
+                    amounts = [all_failure_counts[model][bucket] for bucket in bucketKeysInvariant[bucket_offset:]]
+                    bars = ax.barh(X + width * index, amounts, height=width, hatch=hatches[index], color=colors[index], log=True)
+                    for bar in bars:
+                        set_barh_text(ax, bar)
+                # ax.set_title('Failures found for different levels of $\\epsilon$ ' + name)
+                ax.set_xlabel('Number of Failures (Log)')
+                ax.set_ylabel(name + ' drop threshold (%)')
+                # ax.set_ylim(bottom=0.5, top=ylim_top)
+                ax.set_title(name)
+                # _, ylim_top = ax.get_ylim()
+                ax.set_yticks([x + width * (len(modelsInvariant) - 1) / 2.0 for x in X])  # move tick to center
+                ax.set_yticklabels([bucket_labels[bucket] for bucket in bucketKeysInvariant[bucket_offset:]])
+                # https://stackoverflow.com/questions/28615887/how-to-move-a-tick-label-in-matplotlib
+                # apply offset transform to all x ticklabels.
+                dy = 5 / 72.
+                dx = 0 / 72.
+                offset = ScaledTranslation(dx, dy, fig.dpi_scale_trans)
+                for label in ax.yaxis.get_majorticklabels():
+                    label.set_transform(label.get_transform() + offset)
+                ax.legend(labels=[model_name[model] for model in modelsInvariant])
+        ind_fig.tight_layout()
+        ind_fig.savefig('figures/%s_horiz.png' % title, bbox_inches='tight', dpi=100)
+        plt.close(ind_fig)
+    # fig.savefig('outname.png', bbox_inches='tight', dpi=100)
+    fig.savefig('figures/failure_counts_horiz.png', dpi=100)
+    plt.close(fig)
+
+
     print('Generating figure for only largest failures')
     # Only bucket 6
     fig = plt.figure(figsize=(20, 10))
@@ -324,6 +399,39 @@ if __name__ == '__main__':
     fig.savefig('figures/biggest_failures.png', bbox_inches='tight', dpi=100)
     plt.close(fig)
 
+    print('Generating figure for only largest failures')
+    # Only bucket 6
+    fig = plt.figure(figsize=(16, 10))
+    axes = fig.subplots(1, 2, sharey=True)
+    X = -np.arange(len(mut_names))
+    for in_idx, (name, failure_counts) in \
+        enumerate(zip(['Accuracy', 'Jaccard'], [acc_failure_counts, jacc_failure_counts])):
+        ax = axes[in_idx]
+        for index, model in enumerate(modelsInvariant):
+            amounts = [failure_counts[mut_name][model][bucketKeysInvariant[-1]] for mut_name in mut_names]
+            bars = ax.barh(X + width * index, amounts, height=width, hatch=hatches[index], color=colors[index],
+                          log=True)
+            for bar in bars:
+                set_barh_text(ax, bar, bar_height_factor=0)
+            ax.set_xlabel('Number of Failures (Log)')
+            # ax.set_ylabel(name)
+            # ax.set_ylim(bottom=0.5, top=ylim_top)
+            ax.set_title(name)
+            # _, ylim_top = ax.get_ylim()
+            ax.set_yticks([x + width * (len(modelsInvariant) - 1) / 2.0 for x in X])  # move tick to center
+            # ax.set_yticks([x for x in X])  # move tick to center
+            ax.set_yticklabels([normalize_name(mut_name) for mut_name in mut_names], rotation=45)
+            # https://stackoverflow.com/questions/28615887/how-to-move-a-tick-label-in-matplotlib
+            # apply offset transform to all x ticklabels.
+            dy = 5 / 72.
+            dx = 0 / 72.
+            offset = ScaledTranslation(dx, dy, fig.dpi_scale_trans)
+            for label in ax.yaxis.get_majorticklabels():
+                label.set_transform(label.get_transform() + offset)
+            ax.legend(labels=[model_name[model] for model in modelsInvariant])
+    fig.savefig('figures/biggest_failures_horiz.png', bbox_inches='tight', dpi=100)
+    plt.close(fig)
+
     print('Generating figures for false positive rates')
     subfig_count = (len(mut_names) + 1)
     row_count = 8
@@ -332,7 +440,10 @@ if __name__ == '__main__':
     # fig, axes = plt.subplots(row_count, column_count)
     subfigs = fig.subfigures(row_count, column_count, wspace=0.05, hspace=0.05, squeeze=False)
     overlap_table_row = {'Accuracy': {},
-                     'Jaccard': {}}
+                         'Jaccard': {}}
+    overlap_table_cutoff_row = {'Accuracy': {},
+                         'Jaccard': {}}
+    cutoff_V = 3
     for sub_idx in range(0, subfig_count):
         mut_ind = sub_idx
         row = sub_idx // column_count
@@ -362,11 +473,14 @@ if __name__ == '__main__':
                     amounts = [1]
                     total = 0
                     overlap_table_row[name][title] = '0 & --- & --- & --- & --- & ---'
+                    overlap_table_cutoff_row[name][title] = '--- & ---'
+
                     ax.pie(amounts, shadow=False, startangle=90, labels=labels, colors=['tab:gray'],
                            labeldistance=0,
                            textprops=dict(rotation_mode='anchor', va='center', ha='left'))  # https://stackoverflow.com/questions/52020474/matplotlib-pie-chart-how-to-center-label
                 else:
                     counts = sorted(overlap_counts.keys())
+                    # print(overlap_counts)
                     amounts = [overlap_counts[count] for count in counts]
                     total = sum(amounts)
                     overlap_table_row[name][title] = \
@@ -377,6 +491,13 @@ if __name__ == '__main__':
                          format_amount(overlap_counts[3], total),
                          format_amount(overlap_counts[4], total),
                          format_amount(overlap_counts[5], total))
+                    overlap_table_cutoff_row[name][title] = \
+                        '%s & %s' % \
+                        (
+                         format_amount(
+                             sum([overlap_counts[i] for i in range(len(overlap_counts)+1) if 1 <= i < cutoff_V]), total),
+                         format_amount(
+                             sum([overlap_counts[i] for i in range(len(overlap_counts)+1) if i >= cutoff_V]), total))
                     if title == 'Total':
                         overlap_table_row[name]['\\%'] = \
                             '~ & %s & %s & %s & %s & %s' % \
@@ -385,6 +506,12 @@ if __name__ == '__main__':
                              format_amount_perc_only(overlap_counts[3], total),
                              format_amount_perc_only(overlap_counts[4], total),
                              format_amount_perc_only(overlap_counts[5], total))
+                        overlap_table_cutoff_row[name]['\\%'] = \
+                            '%s & %s' % \
+                            (format_amount_perc_only(
+                                sum([overlap_counts[i] for i in range(len(overlap_counts)+1) if 1 <= i < cutoff_V]), total),
+                             format_amount_perc_only(
+                                 sum([overlap_counts[i] for i in range(len(overlap_counts)+1) if i >= cutoff_V]), total))
                     labels = ['%s SUT%s\n%d (%0.2f)' %
                               (count, 's' if count > 1 else '', overlap_counts[count],
                                100 * overlap_counts[count] / total)
@@ -520,6 +647,33 @@ if __name__ == '__main__':
             both_string += title + '&' + overlap_table_row['Accuracy'][title] + '&' \
                        + overlap_table_row['Jaccard'][title] + ' \\\\ \\hline \n'
     print(overlap_both_table.replace('DATA', both_string).replace('SHORT', 'both'))
+
+    print('Printing LaTeX Overlap by SUT Table')
+
+    overlap_both_table_reduced = '''
+    \\begin{table}[htbp]
+    \\caption{False Positive Counts, V=CUTOFF_V}
+        \\centering
+        \\begin{tabular}{|r|c|c||c|c|c|}
+        \\hline
+        ~ & \\multicolumn{2}{c||}{Accuracy} & \\multicolumn{2}{c|}{Jaccard} \\\\ 
+        Mutation & TP & FP & TP & FP\\\\ \\hline \\hline
+        DATA
+        \\end{tabular}
+        \\label{tab:SHORT_false_positive_reduced}
+    \\end{table}
+        '''
+    print('----- Both Reduced -----')
+    both_string = ''
+    for title in overlap_table_cutoff_row['Accuracy']:
+        if title == 'Total':
+            both_string += '\\hline ' + title + '&' + overlap_table_cutoff_row['Accuracy'][title] + '&' \
+                           + overlap_table_cutoff_row['Jaccard'][title] + ' \\\\  \n'
+        else:
+            both_string += title + '&' + overlap_table_cutoff_row['Accuracy'][title] + '&' \
+                           + overlap_table_cutoff_row['Jaccard'][title] + ' \\\\ \\hline \n'
+    print(overlap_both_table_reduced.replace('DATA', both_string).replace('SHORT', 'both')
+          .replace('CUTOFF_V', '%d' % cutoff_V))
 
     print('Printing LaTeX Overlap by SUT Table')
 

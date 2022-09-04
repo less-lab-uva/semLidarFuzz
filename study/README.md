@@ -3,6 +3,28 @@ This folder contains information about the study set up and results, as well as 
 
 ## Study Set Up
 
+### Resources Collected from SemanticKITTI
+|Type Name|Total Count|Selected Count|%|
+|---|---|---|---|
+|car|205784|44893|21.8% |
+|traffic-sign|0|8443|-|
+|moving-car|8933|3503|39.2% |
+|moving-person|5895|1534|26.0% |
+|moving-bicyclist|2874|1368|47.6% |
+|other-vehicle|10478|888|8.5% |
+|motorcycle|4586|749|16.3% |
+|person|6339|486|7.7% |
+|moving-motorcyclist|555|473|85.2% |
+|truck|2643|421|15.9% |
+|bicycle|10602|449|4.2% |
+|moving-bus|79|45|57.0% |
+|moving-other-vehicle|220|36|16.4% |
+|motorcyclist|171|20|11.7% |
+|moving-truck|172|15|8.7% |
+|bicyclist|6|0|0.0% |
+|bus|10|0|0.0% |
+|**Total**|**259347**|**63323**|**24.4%**|
+
 ### Study Parameters
 During the study, the variables discussed in the Implementation Section were given the corresponding values below.
 These values were chosen through small-batch experimentation to determine reasonable default values for a larger-scale study.
