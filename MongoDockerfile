@@ -1,0 +1,10 @@
+# Base Image
+FROM mongo:5.0.10
+
+RUN apt update
+RUN apt install python3-distutils python3-dev python3-venv python3-pip -y
+
+RUN pip3 install gdown
+RUN python3 -c 'import gdown; gdown.download(id="1NuNzrWSDG7NU1BDjabOhZp34SIItiWe6", output="mongo_data.tar.xz", quiet=True)'
+RUN tar -xf mongo_data.tar.xz
+

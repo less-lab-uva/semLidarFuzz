@@ -32,6 +32,9 @@ class DockerRunner:
     Builds the docker image for the model
     """
     def buildDockerImage(self):
+        if 'DO_NOT_BUILD_MODELS' in os.environ:
+            print('Skipping model building based on DO_NOT_BUILD_MODELS environment var')
+            return
         print("Building {}".format(self.modelDirName))
 
 

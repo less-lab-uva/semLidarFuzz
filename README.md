@@ -49,8 +49,8 @@ pip3 install -r requirements.txt
     - Download from the SemanticKITTI website: http://www.semantic-kitti.org/dataset.html#download
     - Navigate to controllers/extractInstances to create the label files to match
 - Premade
-    - Download from: https://drive.google.com/file/d/10eEmiyYQqCO2_YM2jnL56ATsueH7w14k/view?usp=sharing
-    - Matching mongodb assets collection (import) https://drive.google.com/file/d/1rrvx38dxImwe3H0epGvw73P97eec1xE3/view?usp=sharing
+    - Download from: 
+    - Matching mongodb assets collection (import) 
 - NOTE the instances must match mongodb instances preloaded
 
 
@@ -58,7 +58,7 @@ pip3 install -r requirements.txt
 - Manual prestep
     - Navigate to controllers/modelBasePred to create the prediction files for the model
 - Premade
-    - Download from: https://drive.google.com/file/d/1pqXz62NXroPvrM43TXwMXz0LLLXXMt50/view?usp=sharing
+    - Download from: 
 
 
 
