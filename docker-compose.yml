@@ -1,0 +1,19 @@
+version: '3'
+services:
+  tool_mongodb_docker:
+    image: mongo:5.0.10
+    container_name: tool_mongodb_docker
+    ports:
+      - "27888:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: lidarUser
+      MONGO_INITDB_ROOT_PASSWORD: lidarUserPW
+
+  gen_lidar_tests:
+    container_name: gen_lidar_tests
+    build: .
+    command: tail -f /dev/null
+    volumes:
+      - ./:/root/
+    environment:
+      PYTHONPATH: /root/semLidarFuzzTool

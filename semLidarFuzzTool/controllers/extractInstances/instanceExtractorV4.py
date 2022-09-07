@@ -107,7 +107,7 @@ def addSignInstances(scene, semantics, instances):
                 minXy[2] = 0
                 distAcross = np.linalg.norm(maxXy - minXy)
 
-                print("Sign across: {}".format(distAcross))
+                # print("Sign across: {}".format(distAcross))
 
                 if (distAcross < 3):
 
@@ -291,11 +291,10 @@ def parseAssets(labelsFileName, binFileName, sequence, savePath, sequenceData, a
     return assetsToSave, sequenceData, copyLabel
 
 
-def parseSequence(folderNum, path, savePath, mdbColAssets):
+def parseSequence(folderNum, binPath, labelPath, savePath, mdbColAssets):
 
     print("Starting on seq {}".format(folderNum))
-    
-    currPath = path + folderNum
+
 
     saveSeqAt = savePath + folderNum + "/labels/"
     os.makedirs(saveSeqAt, exist_ok=True)
@@ -304,8 +303,8 @@ def parseSequence(folderNum, path, savePath, mdbColAssets):
     sequenceData["_id"] = folderNum
 
     # Get label / bin files
-    labelFiles = np.array(glob.glob(currPath + "/labels/*.label", recursive = True))
-    binFiles = np.array(glob.glob(currPath + "/velodyne/*.bin", recursive = True))
+    labelFiles = np.array(glob.glob(labelPath + folderNum + "/labels/*.label", recursive = True))
+    binFiles = np.array(glob.glob(binPath + folderNum + "/velodyne/*.bin", recursive = True))
 
     # Sort
     labelFiles = sorted(labelFiles)
@@ -334,6 +333,7 @@ def parseSequence(folderNum, path, savePath, mdbColAssets):
 
     # Batch insert any remaining asset details
     if (len(assetsToSave) != 0):
+        print('Saving remaining', len(assetsToSave), 'assets')
         mdbColAssets.insert_many(assetsToSave)
     # Copy remaining labels
     if (len(labelsToCopy) != 0):
@@ -342,11 +342,16 @@ def parseSequence(folderNum, path, savePath, mdbColAssets):
 
     return sequenceData
 
+
 def parse_args():
     p = argparse.ArgumentParser(
-        description='Model Runner')
+        description='Instance Extractor')
     p.add_argument("-binPath", 
         help="Path to the semanticKITTI sequences", 
+        nargs='?', const="",
+        default="")
+    p.add_argument("-labelPath",
+        help="Path to the semanticKITTI labels",
         nargs='?', const="",
         default="")
     p.add_argument("-mdb", 
@@ -355,8 +360,10 @@ def parse_args():
         default="")
     p.add_argument("-saveAt", 
         help="Where to save the mutation results", 
-        nargs='?', const=os.getcwd(), 
-        default=os.getcwd())
+        nargs='?', const="",
+        default="")
+    return p.parse_args()
+
 
 def main():
     global globalData
@@ -373,11 +380,16 @@ def main():
     mdbColAssetMetadata = mdb["asset_metadata4"]
     print("Connected")
 
-    path = os.path.normpath(args.binPath) + "/"
-    savePath = os.path.normpath(args.saveAt) + "/"
+    binPath = os.path.normpath(args.binPath) + "/"
+    labelPath = os.path.normpath(args.labelPath) + "/"
+    if len(args.saveAt) == 0:
+        savePath = labelPath
+    else:
+        savePath = os.path.normpath(args.saveAt) + "/"
+
     os.makedirs(savePath, exist_ok=True)
 
-    print("Parsing {} :".format(path))
+    print("Parsing {} :".format(binPath))
 
     # Start timer
     tic = time.perf_counter()
@@ -387,7 +399,7 @@ def main():
     # Parse Sequences
     for seq in range(0, 11):
         folderNum = str(seq).rjust(2, '0')
-        sequenceData = parseSequence(folderNum, path, savePath, mdbColAssets)
+        sequenceData = parseSequence(folderNum, binPath, labelPath, savePath, mdbColAssets)
         sequenceResults.append(sequenceData)
 
     

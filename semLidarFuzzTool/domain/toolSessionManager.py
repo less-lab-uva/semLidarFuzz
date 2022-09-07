@@ -240,6 +240,8 @@ class SessionManager:
     Selects the models that will be in use
     """
     def prepareModels(self, modelsGiven):
+        if len(modelsGiven) == 0:
+            return []
 
         # Set of valid models names
         modelValues = []
@@ -249,15 +251,12 @@ class SessionManager:
 
         # Get models to use
         models = []
-        
-        if (modelsGiven == None):
-            models = [Models.CYL.value]
-        else:
-            for model in modelsGiven.split(","):
-                if (model not in modelSet):
-                    print("%s is not a valid option" % (model))
-                    exit()
-                models.append(model)
+
+        for model in modelsGiven.split(","):
+            if (model not in modelSet):
+                print("%s is not a valid option" % (model))
+                exit()
+            models.append(model)
 
         return models
         

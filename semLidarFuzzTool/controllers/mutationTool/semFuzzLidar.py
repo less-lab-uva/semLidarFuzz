@@ -61,8 +61,8 @@ def parse_args():
         nargs='?', const=1, default=1)
 
     p.add_argument('-models', 
-        help='Models (SUTs) to evaluate comma seperated: cyl,spv,sal,sq3,pol',
-        nargs='?', const="cyl,spv,sal,sq3,pol", default="cyl,spv,sal,sq3,pol")
+        help='Models (SUTs) to evaluate comma seperated: cyl,spv,js3c_gpu,sal,sq3',
+        nargs='?', const="", default="")
 
 
     # Tool configurable params

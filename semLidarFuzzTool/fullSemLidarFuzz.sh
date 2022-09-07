@@ -7,8 +7,6 @@
 saveDir=$SAVE_DIR
 mkdir $saveDir
 
-# "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_INTENSITY" "VEHICLE_SCALE"
-# for mutation in "VEHICLE_INTENSITY"
 for mutation in "VEHICLE_INTENSITY" "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_SCALE"
 do
 # -------------------------------------------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ vis = None
 # --------------------------------------------------------------------------------
 
 
-def setUpSaveDir(finalData, saveDir):
+def setUpSaveDir(finalData, saveDir, vis_all=False, mutationRepo=None):
     global finalVisDir
     global mutations
     global models
@@ -62,20 +62,28 @@ def setUpSaveDir(finalData, saveDir):
 
     mutations = set()
 
-    for mutation in finalData[models[0]].keys():
+    for mutation in finalData["mutations"]:
         os.makedirs(finalVisDir + "/" + mutation, exist_ok=True)
         mutations.add(mutation)
 
-    ids = set()
+    if not vis_all:
+        ids = set()
+        for mutation in mutations:
+            for model in models:
+                for key in finalData[model][mutation].keys():
+                    if ("top" in key):
+                        for mutationId in finalData[model][mutation][key]:
+                            if (mutationId[0] not in ids):
+                                os.makedirs(finalVisDir + "/" + mutation + "/" + mutationId[0], exist_ok=True)
+                                ids.add(mutationId[0])
+    else:
+        batchId = finalData['_id']
+        mutationOps = mutationRepo.getMutationDetailsPaged(batchId, 1, 0)
+        for mutationOp in mutationOps:
+            for mutation in mutations:
+                if mutationOp['mutation'] == mutation:
+                    os.makedirs(finalVisDir + "/" + mutation + "/" + mutationOp['_id'], exist_ok=True)
 
-    for mutation in mutations:
-        for model in models:
-            for key in finalData[model][mutation].keys():
-                if ("top" in key):
-                    for mutationId in finalData[model][mutation][key]:
-                        if (mutationId[0] not in ids):
-                            os.makedirs(finalVisDir + "/" + mutation + "/" + mutationId[0], exist_ok=True)
-                            ids.add(mutationId[0])
 
 
 
@@ -281,16 +289,24 @@ def handleOne(mutation, mutationId, mutationRepo):
 
 
 
-def createImages(finalData, mutationRepo):
+def createImages(finalData, mutationRepo, vis_all):
     global mutations
     global models
 
-    for mutation in mutations:
-        for model in models:
-            for key in finalData[model][mutation].keys():
-                if ("top" in key):
-                    for mutationId in finalData[model][mutation][key]:
-                        handleOne(mutation, mutationId[0], mutationRepo)
+    if not vis_all:
+        for mutation in mutations:
+            for model in models:
+                for key in finalData[model][mutation].keys():
+                    if ("top" in key):
+                        for mutationId in finalData[model][mutation][key]:
+                            handleOne(mutation, mutationId[0], mutationRepo)
+    else:
+        batchId = finalData['_id']
+        mutationOps = mutationRepo.getMutationDetailsPaged(batchId, 1, 0)
+        for mutationOp in mutationOps:
+            for mutation in mutations:
+                if mutationOp['mutation'] == mutation:
+                    handleOne(mutation, mutationOp['_id'], mutationRepo)
 
 
 
@@ -321,6 +337,10 @@ def parse_args():
         help="Where to save the mutation results", 
         nargs='?', const=os.getcwd(), 
         default=os.getcwd())
+    p.add_argument('-vis_all',
+                   help='Visualize all mutations',
+                   action='store_true', default=False)
+
     
     return p.parse_args()
 
@@ -349,13 +369,18 @@ def main():
     
     mutationRepo = DetailsRepository(args.mdb)
 
-    finalData = {}
-    with open(toolDir + "/finalData.json") as f:
-        finalData = json.load(f)
-    
-    models = finalData["models"]
+    mutationOps = mutationRepo.getMutationDetailsPaged('FtVrRCBpnTmAt6FfgC6KN7', 1, 0)
 
-    setUpSaveDir(finalData, args.saveAt)
+    finalData = None
+    try:
+        with open(toolDir + "/finalData.json") as f:
+            finalData = json.load(f)
+    except:
+        pass
+
+    models = finalData["models"] if finalData is not None else []
+
+    setUpSaveDir(finalData, args.saveAt, args.vis_all, mutationRepo)
 
     # Set up visualization
     color_dict = color_map_alt_bgr
@@ -365,7 +390,7 @@ def main():
                     scan_name=dataDir + "/00/velodyne/000000.bin",
                     label_name=labelsDir + "/00/labels/000000.label")
 
-    createImages(finalData, mutationRepo)
+    createImages(finalData, mutationRepo, args.vis_all)
 
 
 if __name__ == '__main__':

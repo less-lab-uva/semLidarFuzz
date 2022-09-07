@@ -15,6 +15,5 @@ RUN pip3 install vispy==0.10.0
 RUN pip3 install shortuuid==1.0.9
 RUN pip3 install gdown
 
-# Fix for open cv
-RUN apt update && apt install -y libsm6 libxext6
-RUN apt-get install -y libxrender-dev
+# Fix for open3d
+RUN apt-get install ffmpeg libsm6 libxext6 libxrender-dev mesa-utils-extra libegl1-mesa-dev libgles2-mesa-dev xvfb -y
