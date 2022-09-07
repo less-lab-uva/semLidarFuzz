@@ -1,6 +1,15 @@
 # Study Information
 This folder contains information about the study set up and results, as well as Python code for generating the figures from the paper.
 
+## Downloading Study Data and Generating Figures
+This directory contains a Docker compose setup that will download the study data from Google Drive and generate the figures from the paper (and others).
+This requires that [Docker and Docker Compose](https://docs.docker.com/compose/install/) are installed on your system. Once installed, the below script
+to download the study data to `study_data`, generate the figures found in `figures`, and print the LaTeX definitions of the tables to the console.
+
+```bash
+./generate_figures.sh
+```
+
 ## Study Set Up
 
 ### Resources Collected from SemanticKITTI

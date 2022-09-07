@@ -18,7 +18,7 @@ from matplotlib.transforms import ScaledTranslation
 
 def parse_args():
     p = argparse.ArgumentParser(
-        description='Model Runner')
+        description='Figure Generator')
     p.add_argument("-full_data",
                    help="Path to the data directory produced by the tool",
                    nargs='?')
