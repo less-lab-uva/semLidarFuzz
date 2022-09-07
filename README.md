@@ -1,8 +1,27 @@
 # Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems
 
-Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems
+Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
+
+## Running the Demo
+
+The demo scripts use [Docker and Docker Compose](https://docs.docker.com/compose/install/) and these must be installed.
+The docker script will download a small subset of the SemantiKITTI dataset, run Resource Collection on this subset, and then generate 5 mutations of each type.
+The selected data will be downloaded in `./selected_data` and tool demo output will be produced in `./sample_tool_output`. The output contains the raw `bin` and `label` files, along with visualizations in the `final_viz` folders.
+
+To run the tool demo, use the following command. Building the Docker containers will take ~10 minutes, downloading and running Resource Collection will take ~10 more minutes, and then running the mutations will take ~10 more. There will be progress announcements throughout.
+```bash
+./tool_demo.sh
+```
+
+## Data from the Paper Study
+Similar Docker scripts to recreate the figures and tables from the paper are available in the `./study` directory. Please refer to that README for more information.
+
+
+
 
 ---
+# Full setup for running with SUTs
+The below sections contain information on how to run the tool with all of the SUTs. However, the SUTs are not available upon submission. Please refer to the above sections. The SUT code integration will be made available upon release.
 
 ## Setup
 
