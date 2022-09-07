@@ -1,0 +1,1 @@
+mongodb://lidarUser:lidarUserPW@tool_mongodb_docker/?authSource=admin

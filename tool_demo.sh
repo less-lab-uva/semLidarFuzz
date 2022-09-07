@@ -15,7 +15,7 @@ fi
 count=5
 saveDir=/root/sample_tool_output
 printf "Generating $count mutations for each type and saving to ./sample_tool_output\n"
-for mutation in "VEHICLE_INTENSITY" #"ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_SCALE"
+for mutation in "VEHICLE_INTENSITY" "ADD_ROTATE" "ADD_MIRROR_ROTATE" "SCENE_REMOVE" "SIGN_REPLACE" "VEHICLE_DEFORM" "VEHICLE_SCALE"
 do
   current_time=$(date "+%Y_%m_%d-%H_%M_%S")
   newDir=$mutation"_"$current_time
