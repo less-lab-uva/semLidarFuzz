@@ -1,6 +1,6 @@
 """
 toolSessionManager 
-Manages a given run of the semantic LiDAR fuzzer tool
+Manages a given run of the LiDAR Test Generation tool
 
 @Date 6/28/22
 """
@@ -32,7 +32,7 @@ class SessionManager:
     def __init__(self, args):
 
         print("---------------------------------------------")
-        print("Semantic LiDAR Fuzzer")
+        print("LiDAR Test Generation Session Manager")
 
         # Create a batch id for this run
         self.batchId = str(shortuuid.uuid())

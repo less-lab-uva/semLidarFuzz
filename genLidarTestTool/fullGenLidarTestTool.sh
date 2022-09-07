@@ -57,9 +57,9 @@ do
     # Run command 
     cd controllers/mutationTool
     if [ "$mutation" = "ADD_ROTATE" ] || [ "$mutation" = "ADD_MIRROR_ROTATE" ] ; then
-      python semFuzzLidar.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 1
+      python genLidarTests.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 1
     else
-      python semFuzzLidar.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 5
+      python genLidarTests.py -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models -threadCount 5
     fi
     cd ../..
     # -------------------------------------------------------------------------------------------------------------------s

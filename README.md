@@ -18,8 +18,8 @@ Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Syste
   - Experiments run with with Python 3.6.9
 ```bash
 sudo apt install python3.6-venv
-python3.6 -m venv semFuzzLidar_venv
-source semFuzzLidar_venv/bin/activate
+python3.6 -m venv lidar_venv
+source lidar_venv/bin/activate
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
 ```
@@ -76,8 +76,8 @@ However, for anonymization, until then please use the following Docker container
 - Activate python venv
 - From tool directory run ". setup.sh" (sets up the PYTHONPATH for the tool)
 - in the run file alter the arguments to match your setup
-- ./fullSemLiDARFuzz
-    - python semFuzzLidar.py [args] generates mutations and evaluates them
+- ./fullGenLidarTestTool.sh
+    - python genLidarTests.py [args] generates mutations and evaluates them
     - python finalVisualization.py [args] visualizes the top results reported by the finalDetails object produced (see controllers/finalVisualize)
     - python produceCsv.py [args] creates csv files created from the finalDetails object produced (see controllers/analytics)
     - Note see the controller readmes for more explantation on each of the above scripts 

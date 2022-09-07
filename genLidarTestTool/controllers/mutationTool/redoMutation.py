@@ -29,7 +29,7 @@ batchRecreation
 Get details by a batch Id then save
 """
 def batchRecreation(batchId, sessionManager):
-    print("\n\n Semantic Fuzzer Recreation")
+    print("\n\n LiDAR Test Recreation")
     print("Recreating Batch: {}".format(batchId))
 
     # Connect to collections
@@ -114,7 +114,7 @@ mutationRecreation
 Get a detail by Id then save
 """
 def mutationRecreation(mutationId, sessionManager):
-    print("\n\n Semantic Fuzzer Recreation")
+    print("\n\n LiDAR Test Generation Recreation")
     print("Recreating Mutation {}".format(mutationId))
 
     # Recreate

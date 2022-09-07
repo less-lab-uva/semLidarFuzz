@@ -4,9 +4,9 @@ Controller for the mutation creation and evaluation workflow
 
 ---
 
-## Semantic LiDAR Fuzzer
+## LiDAR Test Generation
 
-- semFuzzLiDAR.py
+- genLidarTests.py
     - Main Runner for tool contains args
 - mutationRunner.py
     - Contains the main loop for mutation generation

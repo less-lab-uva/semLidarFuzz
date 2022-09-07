@@ -1,11 +1,14 @@
 
 import shutil
+
+import pymongo.errors
 from pymongo import MongoClient
 import glob, os
 import numpy as np
 import open3d as o3d
 import random
 import time
+import tqdm
 import argparse
 
 from domain.semanticMapping import name_label_mapping
@@ -250,7 +253,7 @@ def parseAssets(labelsFileName, binFileName, sequence, savePath, sequenceData, a
 
     fileName = os.path.basename(labelsFileName).replace('.label', '')
 
-    print("Parsing: {}".format(fileName))
+    # print("Parsing: {}".format(fileName))
 
     # Label
     label_arr = np.fromfile(labelsFileName, dtype=np.int32)
@@ -313,7 +316,7 @@ def parseSequence(folderNum, binPath, labelPath, savePath, mdbColAssets):
     assetsToSave = []
     labelsToCopy = []
 
-    for index in range(len(labelFiles)):
+    for index in tqdm.tqdm(range(len(labelFiles))):
 
         assetsToSave, sequenceData, copyLabel = parseAssets(labelFiles[index], binFiles[index], folderNum, saveSeqAt, sequenceData, assetsToSave)
         if (copyLabel != None):
@@ -323,7 +326,14 @@ def parseSequence(folderNum, binPath, labelPath, savePath, mdbColAssets):
         if (len(assetsToSave) >= 2000):
             # Save the asset data
             print("Save batch of 2000 seq {}".format(folderNum))
-            mdbColAssets.insert_many(assetsToSave)
+            try:
+                mdbColAssets.insert_many(assetsToSave)
+            except pymongo.errors.BulkWriteError as e:
+                # https://stackoverflow.com/questions/44838280/how-to-ignore-duplicate-key-errors-safely-using-insert-many
+                panic = list(filter(lambda x: x['code'] != 11000, e.details['writeErrors']))
+                if len(panic) > 0:
+                    raise RuntimeError("Error writing to mongo", e)
+
             assetsToSave = []
 
             # Save the new label
@@ -334,7 +344,13 @@ def parseSequence(folderNum, binPath, labelPath, savePath, mdbColAssets):
     # Batch insert any remaining asset details
     if (len(assetsToSave) != 0):
         print('Saving remaining', len(assetsToSave), 'assets')
-        mdbColAssets.insert_many(assetsToSave)
+        try:
+            mdbColAssets.insert_many(assetsToSave)
+        except pymongo.errors.BulkWriteError as e:
+            # https://stackoverflow.com/questions/44838280/how-to-ignore-duplicate-key-errors-safely-using-insert-many
+            panic = list(filter(lambda x: x['code'] != 11000, e.details['writeErrors']))
+            if len(panic) > 0:
+                raise RuntimeError("Error writing to mongo", e)
     # Copy remaining labels
     if (len(labelsToCopy) != 0):
         for labelPair in labelsToCopy:
@@ -404,7 +420,13 @@ def main():
 
     
     # Save metadata for sequence
-    mdbColAssetMetadata.insert_many(sequenceResults)
+    try:
+        mdbColAssetMetadata.insert_many(sequenceResults)
+    except pymongo.errors.BulkWriteError as e:
+        # https://stackoverflow.com/questions/44838280/how-to-ignore-duplicate-key-errors-safely-using-insert-many
+        panic = list(filter(lambda x: x['code'] != 11000, e.details['writeErrors']))
+        if len(panic) > 0:
+            raise RuntimeError("Error writing to mongo", e)
 
     # Create the global data
     for sequenceData in sequenceResults:
@@ -415,7 +437,10 @@ def main():
 
     # Add the global data
     globalData["_id"] = "all"
-    mdbColAssetMetadata.insert_one(globalData)
+    try:
+        mdbColAssetMetadata.insert_one(globalData)
+    except pymongo.errors.DuplicateKeyError as e:
+        pass
 
     # End timer
     toc = time.perf_counter()

@@ -31,7 +31,7 @@ batchId="Vz6d37G4oKABGMXSpheek9"
 # ------------------------------------------
 
 
-python semFuzzLidar.py -redoBatchId $batchId -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models
+python genLidarTests.py -redoBatchId $batchId -binPath "$binPath" -labelPath $lblPath -predPath $predPath -mdb $mongoconnect -modelDir $modelDir -mutation $mutation -count $count -batch $batch -saveAt $newSaveDir -models $models
 
 
 # ------------------------------------------

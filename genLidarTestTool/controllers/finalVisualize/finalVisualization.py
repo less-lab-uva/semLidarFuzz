@@ -1,5 +1,7 @@
+import warnings
 
-
+import tqdm
+import vispy.util
 
 from rangeImageFinalVis import LaserScanVis, SemLaserScan
 import numpy as np
@@ -10,7 +12,8 @@ from pymongo import MongoClient
 import json
 from PIL import Image
 from PIL import ImageFont
-from PIL import ImageDraw 
+from PIL import ImageDraw
+import vispy
 
 
 from data.mutationDetailsRepository import DetailsRepository
@@ -57,7 +60,7 @@ def setUpSaveDir(finalData, saveDir, vis_all=False, mutationRepo=None):
     finalVisDir = saveDir + "/finalvis"
     if os.path.exists(finalVisDir):
         shutil.rmtree(finalVisDir, ignore_errors=True)
-        print("Removing {}".format(finalVisDir))
+        print("Removing {}, re-generating".format(finalVisDir))
     os.makedirs(finalVisDir, exist_ok=True)
 
     mutations = set()
@@ -78,7 +81,8 @@ def setUpSaveDir(finalData, saveDir, vis_all=False, mutationRepo=None):
                                 ids.add(mutationId[0])
     else:
         batchId = finalData['_id']
-        mutationOps = mutationRepo.getMutationDetailsPaged(batchId, 1, 0)
+        mutationOps = list(mutationRepo.getMutationDetailsPaged(batchId, 1, 0))
+        print("Found {} mutation operations to visualize".format(len(mutationOps)))
         for mutationOp in mutationOps:
             for mutation in mutations:
                 if mutationOp['mutation'] == mutation:
@@ -137,7 +141,7 @@ def handleOne(mutation, mutationId, mutationRepo):
                 new-model-id : new scan with model labels (x3)
     """
 
-    print("Saving {} {}".format(mutation, mutationId))
+    # print("Saving {} {}".format(mutation, mutationId))
 
     # Get the mutation data
     item = mutationRepo.getMutationDetailsById(mutationId)
@@ -302,8 +306,9 @@ def createImages(finalData, mutationRepo, vis_all):
                             handleOne(mutation, mutationId[0], mutationRepo)
     else:
         batchId = finalData['_id']
-        mutationOps = mutationRepo.getMutationDetailsPaged(batchId, 1, 0)
-        for mutationOp in mutationOps:
+        mutationOps = list(mutationRepo.getMutationDetailsPaged(batchId, 1, 0))
+        print('Making visualizations for {} mutations'.format(len(mutationOps)))
+        for mutationOp in tqdm.tqdm(mutationOps):
             for mutation in mutations:
                 if mutationOp['mutation'] == mutation:
                     handleOne(mutation, mutationOp['_id'], mutationRepo)
@@ -369,8 +374,6 @@ def main():
     
     mutationRepo = DetailsRepository(args.mdb)
 
-    mutationOps = mutationRepo.getMutationDetailsPaged('FtVrRCBpnTmAt6FfgC6KN7', 1, 0)
-
     finalData = None
     try:
         with open(toolDir + "/finalData.json") as f:
@@ -386,15 +389,18 @@ def main():
     color_dict = color_map_alt_bgr
     nclasses = len(color_dict)
     scan = SemLaserScan(nclasses, color_dict, project=True)
-    vis = LaserScanVis(scan=scan,
-                    scan_name=dataDir + "/00/velodyne/000000.bin",
-                    label_name=labelsDir + "/00/labels/000000.label")
+    vis = LaserScanVis(scan=scan, scan_name=None, label_name=None)
 
     createImages(finalData, mutationRepo, args.vis_all)
 
 
 if __name__ == '__main__':
-    main()
+    # https://github.com/napari/napari/pull/127/files
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning,
+                                message="GPUs can't support floating point data with more than 32-bits, precision will be lost due to downcasting to 32-bit float.")
+        vispy.util.logger.setLevel('ERROR')
+        main()
 
 
 

@@ -1,5 +1,5 @@
 """
-semFuzzLidar 
+LiDAR Test Generation Tool
 Main runner for the mutation tool
 
 @Date 6/23/22
@@ -180,7 +180,7 @@ def parse_args():
 def main():
 
     print("\n\n------------------------------")
-    print("\n\nStarting Semantic LiDAR Fuzzer\n\n")
+    print("\n\nStarting LiDAR Test Generation\n\n")
     
     # Get arguments 
     args = parse_args()

@@ -572,8 +572,9 @@ def runMutations(sessionManager):
         finalData.finalizeFinalDetails()
         finalDataRepo.saveFinalData(finalData.finalData)
 
-    if "mutations" not in finalData.finalData:
-        finalData.finalData["mutations"].extend(sessionManager.mutationsEnabled)
+    for mutation in sessionManager.mutationsEnabled:
+        if mutation not in finalData.finalData["mutations"]:
+            finalData.finalData["mutations"].append(mutation.name)
 
     # Output final data
     print()

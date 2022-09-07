@@ -16,4 +16,5 @@ services:
     volumes:
       - ./:/root/
     environment:
-      PYTHONPATH: /root/semLidarFuzzTool
+      PYTHONPATH: /root/genLidarTestTool
+      DISPLAY: ":0"

@@ -305,7 +305,7 @@ class SemLaserScan(LaserScan):
 class LaserScanVis:
   """Class that creates and handles a visualizer for a pointcloud"""
 
-  def __init__(self, scan, scan_name, label_name):
+  def __init__(self, scan, scan_name=None, label_name=None):
     # for saving images
     # vispy.use("osmesa")
     vispy.use("egl")
@@ -315,9 +315,9 @@ class LaserScanVis:
 
     # vispy.gloo.buffer.DataBuffer().resize_bytes(52 * 1024 * 64)
     
-
-    self.reset()
-    self.update_scan()
+    if self.scan_name is not None and self.label_name is not None:
+      self.reset()
+      self.update_scan()
 
   def reset(self):
     """ Reset. """

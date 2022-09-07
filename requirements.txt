@@ -4,3 +4,5 @@ pymongo==4.1.1
 Pillow==8.4.0
 vispy==0.10.0
 shortuuid==1.0.9
+tqdm==4.64.1
+matplotlib==3.3.4
