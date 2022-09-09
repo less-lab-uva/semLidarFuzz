@@ -58,6 +58,10 @@ To run the tool demo, use the following command. Building the Docker containers 
 ## Data from the Paper Study
 Similar Docker scripts to recreate the figures and tables from the paper are available in the `./study` [directory](./study). Please refer to that README for more information.
 
+### False Positive Discussion
+As noted in the paper, humans are not well suited to judge realism for LiDAR point clouds.
+Examples of false positive and true positive failures as determined by our voting mechanism discussed in Section IV-C-2 are available in [the study false positives folder](./study/false_positives).
+
 ## Additional Implementation Details
 As noted in Section III, the implementation of only three of the basic mutation operations were selected for discussion. 
 Complete discussion of all of the basic mutation operations are available in [this supplement](Generating%20Realistic%20and%20Diverse%20Tests%20for%20LiDAR-Based%20Perception%20Systems%20Additional%20Implementation%20Details.pdf). 
