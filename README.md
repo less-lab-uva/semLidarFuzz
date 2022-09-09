@@ -2,6 +2,9 @@
 
 Tool and study data for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
 
+<img src="./images/pc/lidar_scene_intensities.png" width="300">
+<img src="./images/pc/lidar_scene_labeled.png" width="300">
+
 ## Running the Demo
 The [/.tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
 The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in the Section VI Table III.
@@ -27,3 +30,7 @@ To run the tool demo, use the following command. Building the Docker containers 
 
 ## Data from the Paper Study
 Similar Docker scripts to recreate the figures and tables from the paper are available in the `./study` [directory](./study). Please refer to that README for more information.
+
+## Additional Implementation Details
+As noted in Section III, the implementation of only three of the basic mutation operations were selected for discussion. 
+Complete discussion of all of the basic mutation operations are available in [this supplement](Generating%20Realistic%20and%20Diverse%20Tests%20for%20LiDAR-Based%20Perception%20Systems%20Additional%20Implementation%20Details.pdf). 
