@@ -1,0 +1,234 @@
+Generating figures and printing tables to console
+
+
+------------------------------
+
+
+Starting Figure Generator
+
+
+Looking in folder: /root/study_data/VEHICLE_SCALE_2022_08_16-18_42_45
+Gathering data for Vehicle Scale
+Getting data from /root/study_data/VEHICLE_SCALE_2022_08_16-18_42_45/output/finalData.json
+Looking in folder: /root/study_data/VEHICLE_DEFORM_2022_08_17-11_17_56
+Gathering data for Vehicle Deform
+Getting data from /root/study_data/VEHICLE_DEFORM_2022_08_17-11_17_56/output/finalData.json
+Looking in folder: /root/study_data/SCENE_REMOVE_2022_08_20-21_32_30
+Gathering data for Remove
+Getting data from /root/study_data/SCENE_REMOVE_2022_08_20-21_32_30/output/finalData.json
+Looking in folder: /root/study_data/ADD_MIRROR_ROTATE_2022_08_22-17_35_41
+Gathering data for Add Mirror Rotate
+Getting data from /root/study_data/ADD_MIRROR_ROTATE_2022_08_22-17_35_41/output/finalData.json
+Looking in folder: /root/study_data/ADD_ROTATE_2022_08_24-10_12_02
+Gathering data for Add Rotate
+Getting data from /root/study_data/ADD_ROTATE_2022_08_24-10_12_02/output/finalData.json
+Looking in folder: /root/study_data/SIGN_REPLACE_2022_08_18-02_53_25
+Gathering data for Sign Replace
+Getting data from /root/study_data/SIGN_REPLACE_2022_08_18-02_53_25/output/finalData.json
+Looking in folder: /root/study_data/VEHICLE_INTENSITY_2022_08_22-02_00_44
+Gathering data for Vehicle Intensity
+Getting data from /root/study_data/VEHICLE_INTENSITY_2022_08_22-02_00_44/output/finalData.json
+Generating figures for all mutations
+Generating figures for Add Rotate
+Generating figures for Add Mirror Rotate
+Generating figures for Remove
+Generating figures for Vehicle Intensity
+Generating figures for Vehicle Deform
+Generating figures for Vehicle Scale
+Generating figures for Sign Replace
+Generating figures for Total
+Generating figures for all mutations horiz
+Generating figures for Add Rotate
+Generating figures for Add Mirror Rotate
+Generating figures for Remove
+Generating figures for Vehicle Intensity
+Generating figures for Vehicle Deform
+Generating figures for Vehicle Scale
+Generating figures for Sign Replace
+Generating figures for Total
+Generating figure for only largest failures
+Generating figure for only largest failures
+Generating figures for false positive rates
+Generating overlap figures for Add Rotate
+Generating overlap figures for Add Mirror Rotate
+Generating overlap figures for Remove
+Generating overlap figures for Vehicle Intensity
+Generating overlap figures for Vehicle Deform
+Generating overlap figures for Vehicle Scale
+Generating overlap figures for Sign Replace
+Generating overlap figures for Total
+Generating Overlap By SUT Figures
+Printing LaTeX Overlap Table
+------ Accuracy -----
+
+\begin{table}[htbp]
+\caption{Accuracy False Positive Thresholds}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|c|c|}
+    \hline
+    Mutation & Total & 1 SUT & 2 SUTs & 3 SUTs & 4 SUTs & 5 SUTs \\ \hline
+    Add Rotate&41 & 27 & 12 & 1 & 1 & --- \\ \hline
+Add Mirror Rotate&44 & 35 & 7 & 2 & --- & --- \\ \hline
+Remove&6 & 6 & --- & --- & --- & --- \\ \hline
+Vehicle Intensity&65 & 55 & 8 & 2 & --- & --- \\ \hline
+Vehicle Deform&5 & 5 & --- & --- & --- & --- \\ \hline
+Vehicle Scale&12 & 12 & --- & --- & --- & --- \\ \hline
+Sign Replace&0 & --- & --- & --- & --- & --- \\ \hline
+\hline Total&173 & 140 & 27 & 5 & 1 & --- \\
+\%&~ & (81\%) & (16\%) & (3\%) & (1\%) & ~ \\ \hline
+
+    \end{tabular}
+    \label{tab:acc_false_positive}
+\end{table}
+
+----- Jaccard -----
+
+\begin{table}[htbp]
+\caption{Jaccard False Positive Thresholds}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|c|c|}
+    \hline
+    Mutation & Total & 1 SUT & 2 SUTs & 3 SUTs & 4 SUTs & 5 SUTs \\ \hline
+    Add Rotate&711 & 430 & 204 & 56 & 16 & 5 \\ \hline
+Add Mirror Rotate&751 & 433 & 239 & 61 & 12 & 6 \\ \hline
+Remove&26 & 25 & 1 & --- & --- & --- \\ \hline
+Vehicle Intensity&182 & 151 & 27 & 4 & --- & --- \\ \hline
+Vehicle Deform&10 & 10 & --- & --- & --- & --- \\ \hline
+Vehicle Scale&95 & 70 & 11 & 5 & 9 & --- \\ \hline
+Sign Replace&38 & 34 & 3 & 1 & --- & --- \\ \hline
+\hline Total&1813 & 1153 & 485 & 127 & 37 & 11 \\
+\%&~ & (64\%) & (27\%) & (7\%) & (2\%) & (1\%) \\ \hline
+
+    \end{tabular}
+    \label{tab:jacc_false_positive}
+\end{table}
+
+----- Both -----
+
+\begin{table*}[htbp]
+\caption{False Positive Thresholds}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|c|c||c|c|c|c|c|c|}
+    \hline
+    ~ & \multicolumn{6}{c||}{Accuracy} & \multicolumn{6}{c|}{Jaccard} \\
+    Mutation & Total & 1 SUT & 2 SUTs & 3 SUTs & 4 SUTs & 5 SUTs & Total & 1 SUT & 2 SUTs & 3 SUTs & 4 SUTs & 5 SUTs\\ \hline
+    Add Rotate&41 & 27 & 12 & 1 & 1 & ---&711 & 430 & 204 & 56 & 16 & 5 \\ \hline
+Add Mirror Rotate&44 & 35 & 7 & 2 & --- & ---&751 & 433 & 239 & 61 & 12 & 6 \\ \hline
+Remove&6 & 6 & --- & --- & --- & ---&26 & 25 & 1 & --- & --- & --- \\ \hline
+Vehicle Intensity&65 & 55 & 8 & 2 & --- & ---&182 & 151 & 27 & 4 & --- & --- \\ \hline
+Vehicle Deform&5 & 5 & --- & --- & --- & ---&10 & 10 & --- & --- & --- & --- \\ \hline
+Vehicle Scale&12 & 12 & --- & --- & --- & ---&95 & 70 & 11 & 5 & 9 & --- \\ \hline
+Sign Replace&0 & --- & --- & --- & --- & ---&38 & 34 & 3 & 1 & --- & --- \\ \hline
+\hline Total&173 & 140 & 27 & 5 & 1 & ---&1813 & 1153 & 485 & 127 & 37 & 11 \\
+\%&~ & (81\%) & (16\%) & (3\%) & (1\%) & ~&~ & (64\%) & (27\%) & (7\%) & (2\%) & (1\%) \\ \hline
+
+    \end{tabular}
+    \label{tab:both_false_positive}
+\end{table*}
+
+Printing LaTeX Overlap by SUT Table
+----- Both Reduced -----
+
+    \begin{table}[htbp]
+    \caption{False Positive Counts, V=3}
+        \centering
+        \begin{tabular}{|r|c|c||c|c|c|}
+        \hline
+        ~ & \multicolumn{2}{c||}{Accuracy} & \multicolumn{2}{c|}{Jaccard} \\
+        Mutation & TP & FP & TP & FP\\ \hline \hline
+        Add Rotate&39 & 2&634 & 77 \\ \hline
+Add Mirror Rotate&42 & 2&672 & 79 \\ \hline
+Remove&6 & ---&26 & --- \\ \hline
+Vehicle Intensity&63 & 2&178 & 4 \\ \hline
+Vehicle Deform&5 & ---&10 & --- \\ \hline
+Vehicle Scale&12 & ---&81 & 14 \\ \hline
+Sign Replace&--- & ---&37 & 1 \\ \hline
+\hline Total&167 & 6&1638 & 175 \\
+\%&(97\%) & (3\%)&(90\%) & (10\%) \\ \hline
+
+        \end{tabular}
+        \label{tab:both_false_positive_reduced}
+    \end{table}
+
+Printing LaTeX Overlap by SUT Table
+----- Accuracy SUT Voting Together -----
+
+\begin{table}[htbp]
+\caption{Number of times SUTs Voted Together: Accuracy}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    ~ & SqueezeSegV3 & SalsaNext & JSC3-Net & SPVNAS\\ \hline
+Cylinder3D & 3 (5\%) & 4 (7\%) & 4 (7\%) & 3 (5\%)\\ \hline
+SPVNAS & 2 (3\%) & 3 (5\%) & 2 (3\%) & ~\\ \hline
+JSC3-Net & 4 (7\%) & 8 (13\%) & ~ & ~\\ \hline
+SalsaNext & 15 (25\%) & ~ & ~ & ~\\ \hline
+
+    \end{tabular}
+    \label{tab:acc_voting_together}
+\end{table}
+
+----- Jaccard SUT Voting Together -----
+
+\begin{table}[htbp]
+\caption{Number of times SUTs Voted Together: Jaccard}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    ~ & SqueezeSegV3 & SalsaNext & JSC3-Net & SPVNAS\\ \hline
+Cylinder3D & 77 (5\%) & 95 (6\%) & 60 (4\%) & 67 (4\%)\\ \hline
+SPVNAS & 108 (7\%) & 119 (8\%) & 91 (6\%) & ~\\ \hline
+JSC3-Net & 76 (5\%) & 88 (6\%) & ~ & ~\\ \hline
+SalsaNext & 417 (28\%) & ~ & ~ & ~\\ \hline
+
+    \end{tabular}
+    \label{tab:jacc_voting_together}
+\end{table}
+
+----- False Positive Rate ignoring Sal and Sq3 together
+New True Positive Rate for V=2 under Accuracy metric: 150/173 (87%)
+New True Positive Rate for V=2 under Jaccard metric: 1450/1813 (80%)
+----- Timing Information -----
+
+\begin{table*}[htbp]
+\caption{Time taken for SUT and Tool per mutation (seconds)}
+    \centering
+    \begin{tabular}{|r|c|c|c|c|c|c|c|}
+    \hline
+    ~ & Add Rotate & Add Mirror Rotate & Remove & Vehicle Intensity & Vehicle Deform & Vehicle Scale & Sign Replace\\ \hline
+Cylinder3D & 0.58 & 0.58 & 0.60 & 0.60 & 0.58 & 0.57 & 0.60\\ \hline
+SPVNAS & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17\\ \hline
+JSC3-Net & 4.20 & 4.21 & 4.33 & 4.17 & 4.18 & 4.14 & 4.39\\ \hline
+SalsaNext & 0.03 & 0.03 & 0.03 & 0.03 & 0.03 & 0.03 & 0.03\\ \hline
+SPVNAS & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17\\ \hline
+\hline
+ Generation & 1.90 & 1.97 & 9.62 & 0.46 & 0.43 & 0.84 & 0.71\\ \hline
+
+    \end{tabular}
+    \label{tab:time_taken}
+\end{table*}
+
+----- Average Time per SUT -----
+          Cylinder3D: 0.59 seconds
+              SPVNAS: 0.17 seconds
+            JSC3-Net: 4.23 seconds
+           SalsaNext: 0.03 seconds
+              SPVNAS: 0.17 seconds
+
+----- Average Time per Mutation -----
+       Add Rotate: 1.90 seconds
+Add Mirror Rotate: 1.97 seconds
+           Remove: 9.62 seconds
+Vehicle Intensity: 0.46 seconds
+   Vehicle Deform: 0.43 seconds
+    Vehicle Scale: 0.84 seconds
+     Sign Replace: 0.71 seconds
+
+----- Duplicate Counts -----
+       Add Rotate: 0
+Add Mirror Rotate: 0
+           Remove: 0
+Vehicle Intensity: 0
+   Vehicle Deform: 0
+    Vehicle Scale: 1212
+     Sign Replace: 1852

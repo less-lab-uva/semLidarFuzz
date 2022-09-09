@@ -312,10 +312,10 @@ if __name__ == '__main__':
                 ax.set_xticklabels([bucket_labels[bucket] for bucket in bucketKeysInvariant[bucket_offset:]])
                 ax.legend(labels=[model_name[model] for model in modelsInvariant])
         ind_fig.tight_layout()
-        ind_fig.savefig('figures/%s.png' % title, bbox_inches='tight', dpi=100)
+        ind_fig.savefig('./figures/%s.png' % title, bbox_inches='tight', dpi=100)
         plt.close(ind_fig)
     # fig.savefig('outname.png', bbox_inches='tight', dpi=100)
-    fig.savefig('figures/failure_counts.png', dpi=100)
+    fig.savefig('./figures/failure_counts.png', dpi=100)
     plt.close(fig)
 
     print('Generating figures for all mutations horiz')
@@ -367,10 +367,10 @@ if __name__ == '__main__':
                     label.set_transform(label.get_transform() + offset)
                 ax.legend(labels=[model_name[model] for model in modelsInvariant])
         ind_fig.tight_layout()
-        ind_fig.savefig('figures/%s_horiz.png' % title, bbox_inches='tight', dpi=100)
+        ind_fig.savefig('./figures/%s_horiz.png' % title, bbox_inches='tight', dpi=100)
         plt.close(ind_fig)
     # fig.savefig('outname.png', bbox_inches='tight', dpi=100)
-    fig.savefig('figures/failure_counts_horiz.png', dpi=100)
+    fig.savefig('./figures/failure_counts_horiz.png', dpi=100)
     plt.close(fig)
 
 
@@ -396,7 +396,7 @@ if __name__ == '__main__':
             ax.set_xticks([x + width * (len(modelsInvariant) - 1) / 2.0 for x in X])  # move tick to center
             ax.set_xticklabels([normalize_name(mut_name) for mut_name in mut_names], rotation=15)
             ax.legend(labels=[model_name[model] for model in modelsInvariant])
-    fig.savefig('figures/biggest_failures.png', bbox_inches='tight', dpi=100)
+    fig.savefig('./figures/biggest_failures.png', bbox_inches='tight', dpi=100)
     plt.close(fig)
 
     print('Generating figure for only largest failures')
@@ -429,7 +429,7 @@ if __name__ == '__main__':
             for label in ax.yaxis.get_majorticklabels():
                 label.set_transform(label.get_transform() + offset)
             ax.legend(labels=[model_name[model] for model in modelsInvariant])
-    fig.savefig('figures/biggest_failures_horiz.png', bbox_inches='tight', dpi=100)
+    fig.savefig('./figures/biggest_failures_horiz.png', bbox_inches='tight', dpi=100)
     plt.close(fig)
 
     print('Generating figures for false positive rates')
@@ -530,10 +530,10 @@ if __name__ == '__main__':
                 ax.set_title('%s\n%d Total' % (name, total))
                 # ax.legend(labels=labels)
         ind_fig.tight_layout()
-        ind_fig.savefig('figures/%s Overlap.png' % title, bbox_inches='tight', dpi=100)
+        ind_fig.savefig('./figures/%s Overlap.png' % title, bbox_inches='tight', dpi=100)
         plt.close(ind_fig)
     # fig.savefig('outname.png', bbox_inches='tight', dpi=100)
-    fig.savefig('figures/overlap_counts.png', dpi=100)
+    fig.savefig('./figures/overlap_counts.png', dpi=100)
     plt.close(fig)
 
     print('Generating Overlap By SUT Figures')
@@ -589,9 +589,9 @@ if __name__ == '__main__':
                 ax.set_title('%s\n%d Total' % (name, total))
                 # ax.legend(labels=labels)
         ind_fig.tight_layout()
-        ind_fig.savefig('figures/%s_overlap.png' % title, bbox_inches='tight', dpi=100)
+        ind_fig.savefig('./figures/%s_overlap.png' % title, bbox_inches='tight', dpi=100)
         # fig.savefig('outname.png', bbox_inches='tight', dpi=100)
-    fig.savefig('figures/overlap_by_sut.png', dpi=100)
+    fig.savefig('./figures/overlap_by_sut.png', dpi=100)
 
 
     print('Printing LaTeX Overlap Table')
@@ -767,7 +767,7 @@ if __name__ == '__main__':
     ax.set_xlabel('Mutation')
     ax.set_ylabel('Average Time per Test Case (s)')
     ind_fig.tight_layout()
-    ind_fig.savefig('figures/time_per_mutation.png', bbox_inches='tight', dpi=100)
+    ind_fig.savefig('./figures/time_per_mutation.png', bbox_inches='tight', dpi=100)
     print(timing_table.replace('DATA', time_string))
 
     print('----- Average Time per SUT -----')
