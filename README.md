@@ -2,19 +2,35 @@
 
 Tool and study data for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
 
+We propose a new technique in testing LiDAR-based perception systems that takes as input existing real-world labeled LiDAR test cases, as shown below, and then mutates them to generate novel, realistic test cases that can expand the diversity of tests to explore the long-tail of possible scenes.
+
 **Example point cloud and labelling**
 <div style="white-space: nowrap">
   <img src="./images/pc/lidar_scene_intensities.png" width="300" alt="Example Point Cloud (PC)">
   <img src="./images/pc/lidar_scene_labeled.png" width="300" alt="Example Labelling (ExpSem)">
 </div>
 
-**Adding Entities to existing data** 
-<div style="white-space: nowrap; width:128px">
-  <img src="./images/cropped/add_rotate_example_before.png" width="128px" alt="Initial Point Cloud (PC)">
-  <img src="./images/cropped/add_rotate_example_after.png" width="128px" alt="After Adding a Car (PC')">
-</div>
 
+**Example mutations**
 
+<table>
+<tr><th><b>Adding Entities</b></th><th><b>Removing Entities</b></th><th><b>Altering Entities</b></th></tr>
+<tr><td>
+
+![Initial Point Cloud (PC)](./images/cropped/add_rotate_example_before.png)
+
+![After Adding a Car (PC')](./images/cropped/add_rotate_example_after.png)
+</td><td>
+
+![Initial Point Cloud (PC)](./images/cropped/scene_remove_example_before.png)
+
+![After Removing a Sign (PC')](./images/cropped/scene_remove_example_after.png)
+</td><td>
+
+![Initial Point Cloud (PC)](./images/cropped/deform_example_before.png)
+
+![After Deforming a Sign (PC')](./images/cropped/deform_example_after.png)
+</td></tr></table>
 
 ## Running the Demo
 The [/.tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
