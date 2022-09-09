@@ -2,8 +2,19 @@
 
 Tool and study data for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
 
-<img src="./images/pc/lidar_scene_intensities.png" width="300">
-<img src="./images/pc/lidar_scene_labeled.png" width="300">
+**Example point cloud and labelling**
+<div style="white-space: nowrap">
+  <img src="./images/pc/lidar_scene_intensities.png" width="300" alt="Example Point Cloud (PC)">
+  <img src="./images/pc/lidar_scene_labeled.png" width="300" alt="Example Labelling (ExpSem)">
+</div>
+
+**Adding Entities to existing data** 
+<div style="white-space: nowrap; width:128px">
+  <img src="./images/cropped/add_rotate_example_before.png" width="128px" alt="Initial Point Cloud (PC)">
+  <img src="./images/cropped/add_rotate_example_after.png" width="128px" alt="After Adding a Car (PC')">
+</div>
+
+
 
 ## Running the Demo
 The [/.tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
