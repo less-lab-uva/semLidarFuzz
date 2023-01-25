@@ -5,7 +5,7 @@ if test -f ".keep" ; then
 else
   printf "Downloading selected data to use for generating tests\n"
   docker-compose exec gen_lidar_tests bash -c "mkdir /root/selected_data 2>/dev/null"
-  docker-compose exec gen_lidar_tests bash -c "python3 -c 'import gdown; gdown.download(id=\"1eRayHOx2sG4EaLzZ2daU8caKhqCoKkBD\", output=\"/root/selected_data.tar.xz\", quiet=False)' && printf \"Extracting selected data to ./selected_data, this may take a moment\n\" && tar -xf /root/selected_data.tar.xz -C /root/selected_data --strip-components=1 --checkpoint=.250 && rm /root/selected_data.tar.xz" && \
+  docker-compose exec gen_lidar_tests bash -c "wget -O /root/selected_data.tar.xz https://zenodo.org/record/7569212/files/study_data_compressed.tar.xz?download=1 && printf \"Extracting selected data to ./selected_data, this may take a moment\n\" && tar -xf /root/selected_data.tar.xz -C /root/selected_data --strip-components=1 --checkpoint=.250 && rm /root/selected_data.tar.xz" && \
   printf "\nPerforming Resource Collection\n" && \
   docker-compose exec gen_lidar_tests bash -c "python3 /root/genLidarTestTool/controllers/extractInstances/instanceExtractorV4.py -mdb /root/mongoconnect.txt -labelPath /root/selected_data/semantic_kitti_labels/dataset/sequences -binPath /root/selected_data/semantic_kitti_pcs/dataset/sequences" && \
   printf "Resource Collection" && \
