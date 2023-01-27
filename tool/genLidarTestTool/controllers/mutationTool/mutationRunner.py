@@ -72,266 +72,268 @@ Performs one mutation
 Based on the mutation provided and the session
 """
 def performMutation(mutation, assetRepo, sessionManager, removeIterateNum):
-    if assetRepo is None:
-        assetRepo = AssetRepository(sessionManager.binPath, sessionManager.labelPath, sessionManager.mongoConnect)
-    # Start timer for the mutation
-    tic = time.perf_counter()
-
-    
-    # Create mutation details
     mutationId = str(shortuuid.uuid())
     details = {}
-    details["_id"] = mutationId + "-" + mutation
-    details["mutationId"] = mutationId
-    details["epochTime"] = int(time.time())
-    details["dateTime"] = time.ctime(time.time())
-    details["batchId"] = sessionManager.batchId
-    details["mutation"] = mutation
-
-    # mutation
-    # print(mutation)
-    mutationSplit = mutation.split('_')
-    # Asset location
-    assetLocation =  mutationSplit[0]
-    # Transformations
-    mutationSet = set()
-    for mutationComponent in mutationSplit:
-        mutationSet.add(mutationComponent)
-
-    # ------------------------------------
-    # GET THE ASSET AND SCENE
-
-    # Base:
-    pcdArr, intensity, semantics, instances = None, None, None, None
-    pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = None, None, None, None
-    assetRecord = None
-    success = True
-    combine = True
-    modelPredictionsScene = {}
-    modelPredictionsAsset = {}
-
-    # NON SCENE SPECIFIC
-    # Adding asset to scene pick random sequence and scene as base
-    if (assetLocation == mutationsEnum.AssetLocation.ADD.name):
-
-        # Select base scene, given
-        if (sessionManager.scene != None):
-            details["baseSequence"] = sessionManager.sequence
-            details["baseScene"] = sessionManager.scene
-            pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBin(sessionManager.binPath,  sessionManager.labelPath, 
-                                                                                sessionManager.sequence, sessionManager.scene)
-
-        # Select base scene, random
-        else:
-            idx = random.choice(range(len(sessionManager.labelFiles)))
-            # print(sessionManager.binFiles[idx])
-            head_tail = os.path.split(sessionManager.binFiles[idx])
-            scene = head_tail[1]
-            scene = scene.replace('.bin', '')
-        
-            head_tail = os.path.split(head_tail[0])
-            head_tail = os.path.split(head_tail[0])
-            sequence = head_tail[1]
-            details["baseSequence"] = sequence
-            details["baseScene"] = scene
-            pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBinFiles(sessionManager.binFiles[idx], sessionManager.labelFiles[idx])
+    try:
+        if assetRepo is None:
+            assetRepo = AssetRepository(sessionManager.binPath, sessionManager.labelPath, sessionManager.mongoConnect)
+        # Start timer for the mutation
+        tic = time.perf_counter()
 
 
-        # Select Asset, Given
-        if (sessionManager.assetId != None):
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getAssetById(sessionManager.assetId)
-        # Select Asset, Random
-        else:
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAsset()
-            # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetOfTypes([81])
+        # Create mutation details
+        details["_id"] = mutationId + "-" + mutation
+        details["mutationId"] = mutationId
+        details["epochTime"] = int(time.time())
+        details["dateTime"] = time.ctime(time.time())
+        details["batchId"] = sessionManager.batchId
+        details["mutation"] = mutation
 
-        if (assetRecord != None):
-            # Get model prediction (asset & scene)
-            _, instanceAssetScene = fileIoUtil.openLabel(sessionManager.labelPath, assetRecord["sequence"], assetRecord["scene"])
-            for model in sessionManager.models:
-                modelPredictionsScene[model] = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, details["baseSequence"], details["baseScene"])
-                modelAssetScene = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, assetRecord["sequence"], assetRecord["scene"])
-                modelPredictionsAsset[model] = modelAssetScene[instanceAssetScene == assetRecord["instance"]]
+        # mutation
+        # print(mutation)
+        mutationSplit = mutation.split('_')
+        # Asset location
+        assetLocation =  mutationSplit[0]
+        # Transformations
+        mutationSet = set()
+        for mutationComponent in mutationSplit:
+            mutationSet.add(mutationComponent)
 
-    # SCENE SPECIFIC
-    # Specific scene get asset then get the scene that asset is from
-    elif (assetLocation == mutationsEnum.AssetLocation.SCENE.name or 
-        assetLocation == mutationsEnum.AssetLocation.SIGN.name or
-        assetLocation == mutationsEnum.AssetLocation.VEHICLE.name):
+        # ------------------------------------
+        # GET THE ASSET AND SCENE
 
-        # GIVEN ASSET ID (OPTIONAL)
-        if (sessionManager.assetId != None):
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getAssetById(sessionManager.assetId)
+        # Base:
+        pcdArr, intensity, semantics, instances = None, None, None, None
+        pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = None, None, None, None
+        assetRecord = None
+        success = True
+        combine = True
+        modelPredictionsScene = {}
+        modelPredictionsAsset = {}
 
-        # REMOVE OPTION TO TRY ALL ASSETS
-        elif(sessionManager.removeIterate and mutationsEnum.Transformation.REMOVE.name in mutationSet):
-            assetRecordResult = assetRepo.getAssetsPaged(removeIterateNum, 1)
+        # NON SCENE SPECIFIC
+        # Adding asset to scene pick random sequence and scene as base
+        if (assetLocation == mutationsEnum.AssetLocation.ADD.name):
 
-            assetRecordList = list(assetRecordResult)
-            if (len(assetRecordList) > 0):
-                assetRecord = assetRecordList[0]
-                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord =  assetRepo.getInstanceFromAssetRecord(assetRecord)
-            # if there are no more assets to try, but haven't hit the expected number, short ciruit
+            # Select base scene, given
+            if (sessionManager.scene != None):
+                details["baseSequence"] = sessionManager.sequence
+                details["baseScene"] = sessionManager.scene
+                pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBin(sessionManager.binPath,  sessionManager.labelPath,
+                                                                                    sessionManager.sequence, sessionManager.scene)
+
+            # Select base scene, random
             else:
-                return False, {'none_left_to_remove': True}
+                idx = random.choice(range(len(sessionManager.labelFiles)))
+                # print(sessionManager.binFiles[idx])
+                head_tail = os.path.split(sessionManager.binFiles[idx])
+                scene = head_tail[1]
+                scene = scene.replace('.bin', '')
+
+                head_tail = os.path.split(head_tail[0])
+                head_tail = os.path.split(head_tail[0])
+                sequence = head_tail[1]
+                details["baseSequence"] = sequence
+                details["baseScene"] = scene
+                pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBinFiles(sessionManager.binFiles[idx], sessionManager.labelFiles[idx])
 
 
-        # ONLY VEHICLE ASSETS
-        elif (assetLocation == mutationsEnum.AssetLocation.VEHICLE.name):
-            # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetOfTypesWithinScene(globals.vehicles, sequence, scene)
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAssetOfTypes(semanticMapping.instancesVehicle.keys())
-        
-
-        # ONLY SIGN ASSETS
-        elif (assetLocation == mutationsEnum.AssetLocation.SIGN.name):
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAssetOfType(81)
-        
-        # ANY ASSET
-        else:
-            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAsset()
-            # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetWithinScene(sequence, scene)
-
-        
-        if (assetRecord != None):
-            pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBin(sessionManager.binPath, sessionManager.labelPath, assetRecord["sequence"], assetRecord["scene"])
-            instancesBeforeRemoval = np.copy(instances)
-            pcdArr, intensity, semantics, instances, sceneMask = pcdCommon.removeAssetScene(pcdArrAsset, pcdArr, intensity, semantics, instances)
-            details["baseSequence"] = assetRecord["sequence"]
-            details["baseScene"] = assetRecord["scene"]
-
-            # Get model prediction (asset & scene)
-            for model in sessionManager.models:
-                modelPredictionsScene[model] = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, details["baseSequence"], details["baseScene"])
-                modelPredictionsAsset[model] = modelPredictionsScene[model][instancesBeforeRemoval == assetRecord["instance"]]
-                # Remove asset from the scene 
-                modelPredictionsScene[model] = modelPredictionsScene[model][sceneMask]
-                # print("{} {} {} {}".format(np.shape(semantics), np.shape(modelPredictionsScene[model]), np.shape(semanticsAsset), np.shape(modelPredictionsAsset[model])))
-
-
-    else:
-        print("ERROR asset location: {} NOT SUPPORTED".format(assetLocation))
-
-
-    
-    # Validate the asset was found
-    if assetRecord == None:
-        print("Invalid Asset / No asset found")
-        success = False
-    else:
-        # print(assetRecord)
-        details["asset"] = assetRecord["_id"]
-        details["assetSequence"] = assetRecord["sequence"]
-        details["assetScene"] = assetRecord["scene"]
-        details["assetType"] = assetRecord["type"]
-        details["typeNum"] = assetRecord["typeNum"]
-        details["assetPoints"] = assetRecord["points"]
-        # Points are collected for weight average on add, if sign is taken only the sign point are averaged, not the pole
-        if (assetRecord["typeNum"] == 81):
-            details["assetPoints"] = int(np.shape(pcdArrAsset[semanticsAsset == 81])[0])
-
-
-    # ---------------------------
-    # PERFORM THE MUTATION
-
-
-    for mutationIndex in range (1, len(mutationSplit)):
-        if success:
-            # INTENSITY
-            if (mutationSplit[mutationIndex] == mutationsEnum.Transformation.INTENSITY.name):
-                intensityAsset, details = pcdIntensity.intensityChange(intensityAsset, details, sessionManager.intensityChange)
-                
-            # DEFORM
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.DEFORM.name):
-                pcdArrAsset, details = pcdDeform.deform(pcdArrAsset, details,
-                                                        sessionManager.deformPoint, sessionManager.deformPercent, sessionManager.deformMu, 
-                                                        sessionManager.deformSigma, sessionManager.deformSeed)
-            
-            
-            # SCALE
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.SCALE.name):
-                success, assetResult, sceneResult, details, modelPredictionsScene, modelPredictionsAsset = pcdScale.scaleVehicle(pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, 
-                                                                                                                                pcdArr, intensity, semantics, instances, details, 
-                                                                                                                                sessionManager.scaleAmount,
-                                                                                                                                modelPredictionsScene, modelPredictionsAsset) 
-                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = assetResult
-                pcdArr, intensity, semantics, instances = sceneResult
-
-
-            # REMOVE
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.REMOVE.name):
-                success, pcdArr, intensity, semantics, instances, details, modelPredictionsScene = pcdRemove.replaceBasedOnShadow(pcdArrAsset, pcdArr, intensity, semantics, instances, 
-                                                                                                                                details, modelPredictionsScene)
-                # Don't combine if remove is the last transformation
-                if mutationIndex + 1 == len(mutationSplit):
-                    combine = False
-
-            # MIRROR
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.MIRROR.name):
-                pcdArrAsset, details = pcdRotate.mirrorAsset(pcdArrAsset, details, sessionManager.mirrorAxis)
-
-            # ROTATE
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.ROTATE.name):
-                success, pcdArrAsset, sceneResult, details, modelPredictionsScene = pcdRotate.rotate(pcdArr, intensity, semantics, instances, 
-                                                                                                    pcdArrAsset, 
-                                                                                                    details, sessionManager.rotation, 
-                                                                                                    modelPredictionsScene)
-                pcdArr, intensity, semantics, instances = sceneResult
-
-
-            # REPLACE
-            elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.REPLACE.name):
-                success, sceneResult, assetResult, details, modelPredictionsScene, modelPredictionsAsset = pcdSignReplace.signReplace(pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, 
-                                                                                                                            pcdArr, intensity, semantics, instances, 
-                                                                                                                            details, sessionManager.signChange,
-                                                                                                                            modelPredictionsScene, modelPredictionsAsset)
-                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = assetResult
-                pcdArr, intensity, semantics, instances = sceneResult    
-
-
+            # Select Asset, Given
+            if (sessionManager.assetId != None):
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getAssetById(sessionManager.assetId)
+            # Select Asset, Random
             else:
-                print("UNSUPPORTED TRANSFORMATION: {}".format(mutationSplit[mutationIndex]))
-                success = False
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAsset()
+                # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetOfTypes([81])
 
-    # ---------------------------
-    # MERGE & SAVE
+            if (assetRecord != None):
+                # Get model prediction (asset & scene)
+                _, instanceAssetScene = fileIoUtil.openLabel(sessionManager.labelPath, assetRecord["sequence"], assetRecord["scene"])
+                for model in sessionManager.models:
+                    modelPredictionsScene[model] = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, details["baseSequence"], details["baseScene"])
+                    modelAssetScene = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, assetRecord["sequence"], assetRecord["scene"])
+                    modelPredictionsAsset[model] = modelAssetScene[instanceAssetScene == assetRecord["instance"]]
 
-    # Combine the final results
-    if success and combine:
-        pcdArr, intensity, semantics, instances = pcdCommon.combine(pcdArr, intensity, semantics, instances, 
-                                                                        pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset)
-        # Combine model results
-        for model in sessionManager.models:
-            modelPredictionsScene[model] = np.hstack((modelPredictionsScene[model], modelPredictionsAsset[model]))
-       
+        # SCENE SPECIFIC
+        # Specific scene get asset then get the scene that asset is from
+        elif (assetLocation == mutationsEnum.AssetLocation.SCENE.name or
+            assetLocation == mutationsEnum.AssetLocation.SIGN.name or
+            assetLocation == mutationsEnum.AssetLocation.VEHICLE.name):
 
-    # Visualize the mutation if enabled
-    if success and sessionManager.visualize:
-        visualize(pcdArrAsset, pcdArr, intensity, semantics, mutationSet)
+            # GIVEN ASSET ID (OPTIONAL)
+            if (sessionManager.assetId != None):
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getAssetById(sessionManager.assetId)
+
+            # REMOVE OPTION TO TRY ALL ASSETS
+            elif(sessionManager.removeIterate and mutationsEnum.Transformation.REMOVE.name in mutationSet):
+                assetRecordResult = assetRepo.getAssetsPaged(removeIterateNum, 1)
+
+                assetRecordList = list(assetRecordResult)
+                if (len(assetRecordList) > 0):
+                    assetRecord = assetRecordList[0]
+                    pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord =  assetRepo.getInstanceFromAssetRecord(assetRecord)
+                # if there are no more assets to try, but haven't hit the expected number, short ciruit
+                else:
+                    return False, {'none_left_to_remove': True}
 
 
-    # End timer for mutation
-    toc = time.perf_counter()
-    timeSeconds = toc - tic
-    timeFormatted = formatSecondsToHhmmss(timeSeconds)
+            # ONLY VEHICLE ASSETS
+            elif (assetLocation == mutationsEnum.AssetLocation.VEHICLE.name):
+                # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetOfTypesWithinScene(globals.vehicles, sequence, scene)
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAssetOfTypes(semanticMapping.instancesVehicle.keys())
 
 
-    # Combine the xyz, intensity and semantics, instance labels labels and bins
-    if (success):
-        details["seconds"] = timeSeconds
-        details["mutationTime"] = timeFormatted
-        if (sessionManager.saveMutationFlag):
-            # Save mutated bin and update label file
-            saveVel = sessionManager.stageDir + "/"
-            saveLabel = sessionManager.doneLabelDir + "/"
-            fileIoUtil.saveBinLabelPair(pcdArr, intensity, semantics, instances, saveVel, saveLabel, details["_id"])
-            # Save updated model predictions
+            # ONLY SIGN ASSETS
+            elif (assetLocation == mutationsEnum.AssetLocation.SIGN.name):
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAssetOfType(81)
+
+            # ANY ASSET
+            else:
+                pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = assetRepo.getRandomAsset()
+                # pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset, assetRecord = mongoUtil.getRandomAssetWithinScene(sequence, scene)
+
+
+            if (assetRecord != None):
+                pcdArr, intensity, semantics, instances = fileIoUtil.openLabelBin(sessionManager.binPath, sessionManager.labelPath, assetRecord["sequence"], assetRecord["scene"])
+                instancesBeforeRemoval = np.copy(instances)
+                pcdArr, intensity, semantics, instances, sceneMask = pcdCommon.removeAssetScene(pcdArrAsset, pcdArr, intensity, semantics, instances)
+                details["baseSequence"] = assetRecord["sequence"]
+                details["baseScene"] = assetRecord["scene"]
+
+                # Get model prediction (asset & scene)
+                for model in sessionManager.models:
+                    modelPredictionsScene[model] = fileIoUtil.openModelPredictions(sessionManager.basePredictionPath, model, details["baseSequence"], details["baseScene"])
+                    modelPredictionsAsset[model] = modelPredictionsScene[model][instancesBeforeRemoval == assetRecord["instance"]]
+                    # Remove asset from the scene
+                    modelPredictionsScene[model] = modelPredictionsScene[model][sceneMask]
+                    # print("{} {} {} {}".format(np.shape(semantics), np.shape(modelPredictionsScene[model]), np.shape(semanticsAsset), np.shape(modelPredictionsAsset[model])))
+
+
+        else:
+            print("ERROR asset location: {} NOT SUPPORTED".format(assetLocation))
+
+
+
+        # Validate the asset was found
+        if assetRecord == None:
+            print("Invalid Asset / No asset found")
+            success = False
+        else:
+            # print(assetRecord)
+            details["asset"] = assetRecord["_id"]
+            details["assetSequence"] = assetRecord["sequence"]
+            details["assetScene"] = assetRecord["scene"]
+            details["assetType"] = assetRecord["type"]
+            details["typeNum"] = assetRecord["typeNum"]
+            details["assetPoints"] = assetRecord["points"]
+            # Points are collected for weight average on add, if sign is taken only the sign point are averaged, not the pole
+            if (assetRecord["typeNum"] == 81):
+                details["assetPoints"] = int(np.shape(pcdArrAsset[semanticsAsset == 81])[0])
+
+
+        # ---------------------------
+        # PERFORM THE MUTATION
+
+
+        for mutationIndex in range (1, len(mutationSplit)):
+            if success:
+                # INTENSITY
+                if (mutationSplit[mutationIndex] == mutationsEnum.Transformation.INTENSITY.name):
+                    intensityAsset, details = pcdIntensity.intensityChange(intensityAsset, details, sessionManager.intensityChange)
+
+                # DEFORM
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.DEFORM.name):
+                    pcdArrAsset, details = pcdDeform.deform(pcdArrAsset, details,
+                                                            sessionManager.deformPoint, sessionManager.deformPercent, sessionManager.deformMu,
+                                                            sessionManager.deformSigma, sessionManager.deformSeed)
+
+
+                # SCALE
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.SCALE.name):
+                    success, assetResult, sceneResult, details, modelPredictionsScene, modelPredictionsAsset = pcdScale.scaleVehicle(pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset,
+                                                                                                                                    pcdArr, intensity, semantics, instances, details,
+                                                                                                                                    sessionManager.scaleAmount,
+                                                                                                                                    modelPredictionsScene, modelPredictionsAsset)
+                    pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = assetResult
+                    pcdArr, intensity, semantics, instances = sceneResult
+
+
+                # REMOVE
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.REMOVE.name):
+                    success, pcdArr, intensity, semantics, instances, details, modelPredictionsScene = pcdRemove.replaceBasedOnShadow(pcdArrAsset, pcdArr, intensity, semantics, instances,
+                                                                                                                                    details, modelPredictionsScene)
+                    # Don't combine if remove is the last transformation
+                    if mutationIndex + 1 == len(mutationSplit):
+                        combine = False
+
+                # MIRROR
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.MIRROR.name):
+                    pcdArrAsset, details = pcdRotate.mirrorAsset(pcdArrAsset, details, sessionManager.mirrorAxis)
+
+                # ROTATE
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.ROTATE.name):
+                    success, pcdArrAsset, sceneResult, details, modelPredictionsScene = pcdRotate.rotate(pcdArr, intensity, semantics, instances,
+                                                                                                        pcdArrAsset,
+                                                                                                        details, sessionManager.rotation,
+                                                                                                        modelPredictionsScene)
+                    pcdArr, intensity, semantics, instances = sceneResult
+
+
+                # REPLACE
+                elif (mutationSplit[mutationIndex] == mutationsEnum.Transformation.REPLACE.name):
+                    success, sceneResult, assetResult, details, modelPredictionsScene, modelPredictionsAsset = pcdSignReplace.signReplace(pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset,
+                                                                                                                                pcdArr, intensity, semantics, instances,
+                                                                                                                                details, sessionManager.signChange,
+                                                                                                                                modelPredictionsScene, modelPredictionsAsset)
+                    pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset = assetResult
+                    pcdArr, intensity, semantics, instances = sceneResult
+
+
+                else:
+                    print("UNSUPPORTED TRANSFORMATION: {}".format(mutationSplit[mutationIndex]))
+                    success = False
+
+        # ---------------------------
+        # MERGE & SAVE
+
+        # Combine the final results
+        if success and combine:
+            pcdArr, intensity, semantics, instances = pcdCommon.combine(pcdArr, intensity, semantics, instances,
+                                                                            pcdArrAsset, intensityAsset, semanticsAsset, instancesAsset)
+            # Combine model results
             for model in sessionManager.models:
-                saveAtModel = sessionManager.doneMutatedPredDir + "/" + model + "/"
-                fileIoUtil.saveLabelSemantics(modelPredictionsScene[model], saveAtModel, details["_id"])
-                
+                modelPredictionsScene[model] = np.hstack((modelPredictionsScene[model], modelPredictionsAsset[model]))
 
-    return success, details
-    
+
+        # Visualize the mutation if enabled
+        if success and sessionManager.visualize:
+            visualize(pcdArrAsset, pcdArr, intensity, semantics, mutationSet)
+
+
+        # End timer for mutation
+        toc = time.perf_counter()
+        timeSeconds = toc - tic
+        timeFormatted = formatSecondsToHhmmss(timeSeconds)
+
+
+        # Combine the xyz, intensity and semantics, instance labels labels and bins
+        if (success):
+            details["seconds"] = timeSeconds
+            details["mutationTime"] = timeFormatted
+            if (sessionManager.saveMutationFlag):
+                # Save mutated bin and update label file
+                saveVel = sessionManager.stageDir + "/"
+                saveLabel = sessionManager.doneLabelDir + "/"
+                fileIoUtil.saveBinLabelPair(pcdArr, intensity, semantics, instances, saveVel, saveLabel, details["_id"])
+                # Save updated model predictions
+                for model in sessionManager.models:
+                    saveAtModel = sessionManager.doneMutatedPredDir + "/" + model + "/"
+                    fileIoUtil.saveLabelSemantics(modelPredictionsScene[model], saveAtModel, details["_id"])
+
+
+        return success, details
+    except RuntimeError:
+        return False, details
 
 """
 visualize
@@ -521,6 +523,7 @@ def runMutations(sessionManager):
     attemptedNum = 0
     successNum = 0
     processList = []
+    print('Generating mutation batch for:', sessionManager.models)
     while (successNum < sessionManager.expectedNum):
 
         # Start timer for batch
@@ -547,6 +550,7 @@ def runMutations(sessionManager):
             process = mp.Process(target=evalBatch, args=(sessionManager, mutationDetails, finalData, successNum, sessionManager.expectedNum, queue))
             process.start()
         else:
+            print('Starting Evaluation of ', sessionManager.models)
             finalData = evalBatch(sessionManager, mutationDetails, finalData, successNum, sessionManager.expectedNum)
 
 

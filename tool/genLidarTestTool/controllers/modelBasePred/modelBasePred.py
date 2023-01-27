@@ -64,6 +64,7 @@ def main():
     predBasePath = args.pred
     model = args.model
     modelBaseDir = args.modelDir
+    os.makedirs(stagePath, exist_ok=True)
 
     # Get the Model Runner
     if model == Models.CYL.value:
@@ -108,7 +109,11 @@ def main():
 
         # Copy bins in current folder to stage
         print("Copy folder {} to stage:".format(folderNum))
-        filesInFolder = glob.glob(os.path.join(curFolder, "*")) 
+        print(curFolder, '->', stagePath)
+        filesInFolder = glob.glob(os.path.join(curFolder, "*"))
+        if len(filesInFolder) == 0:
+            print('Empty folder, skipping')
+            continue
         for f in filesInFolder:
             shutil.copy(f, stagePath)
 
@@ -119,6 +124,7 @@ def main():
         print("Starting predictions on {}".format(folderNum))
         print("Data {}".format(stageSeqFolder))
         print("Pred {}".format(savePreds))
+        os.makedirs(savePreds, exist_ok=True)
         print("Model {}".format(model))
 
         # Predict for the current folder

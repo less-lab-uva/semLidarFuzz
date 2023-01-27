@@ -17,11 +17,10 @@ RUN pip3 install Pillow==8.4.0
 RUN pip3 install vispy==0.10.0
 RUN pip3 install shortuuid==1.0.9
 RUN pip3 install tqdm==4.64.1
-RUN pip3 install gdown==4.5.1
 
 # Fix for open3d https://github.com/vt-vl-lab/3d-photo-inpainting/issues/23
 RUN apt-get update
-RUN apt-get install ffmpeg libsm6 libxext6 libxrender-dev mesa-utils-extra libegl1-mesa-dev libgles2-mesa-dev xvfb libfontconfig1-dev -y
+RUN apt-get install ffmpeg libsm6 libxext6 libxrender-dev mesa-utils-extra libegl1-mesa-dev libgles2-mesa-dev xvfb libfontconfig1-dev wget docker.io -y
 ENV DISPLAY=:0
 RUN pip3 install scipy==1.5.4
 RUN pip3 install matplotlib==3.3.4

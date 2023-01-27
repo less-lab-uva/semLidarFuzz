@@ -28,7 +28,7 @@ class CylRunner(DockerRunner):
         # Normalize paths
         dataDir = os.path.normpath(dataDirectory)
         predictionDir = os.path.normpath(predictionDirectory)
-
+        print(dataDir)
         if (os.path.basename(dataDir) != "dataset"):
             raise ValueError("Expecting that the directory to predict ends with dataset {}".format(dataDir))
 

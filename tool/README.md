@@ -2,6 +2,35 @@
 
 Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
 
+## Running the Demo (containerized)
+
+The [./tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
+The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in Section VI and Table III.
+The `./tool_demo.sh` script generates data and also runs the SUTs evaluated in the study; to skip this and only perform data generation, use `./tool_demo_no_sut.sh`.
+
+The demo scripts use [Docker and Docker Compose](https://docs.docker.com/compose/install/) and these must be installed.
+The docker script will download a small subset of the SemantiKITTI dataset, run Resource Collection on this subset, and then generate 5 mutations of each type.
+The selected data will be downloaded in `./selected_data/` and tool demo output will be produced in `./sample_tool_output/`. 
+The output contains the raw `bin` and `label` files, along with visualizations in the `final_viz` folders.
+
+Within the `./selected_data/` folder, the `bin` files are the raw LiDAR point clouds with intensities, and the `label` files contain the ground truth semantic labeling with instances included in the SemanticKITTI format.
+After running the Resource Collection phase, the `label` files will be modified in place to contain the additional entities identified (Section II-B).
+
+Within the `./sample_tool_output/` folder, the new mutations will each be in separate folders of the form `<mutation name>_<timestamp>/`. 
+Each mutation folder will contain a `/output/done/` folder that contains a set of  
+
+
+To run the tool demo, use the following command. Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more, and then the SUTs will take ~10 more. There will be progress announcements throughout.
+```bash
+./tool_demo.sh
+```
+
+
+Note: if you encounter an NVIDIA docker issue, check that you have CUDA 10.0 installed and run `sudo source ./install_nvidia_docker.sh`
+
+
+---
+
 ## Tool Inputs
 The tool takes as input a set of labeled LiDAR point clouds as described in Sections II-A and II-B. 
 This implementation uses the [SemanticKITTI](http://www.semantic-kitti.org/) data set.
@@ -10,7 +39,7 @@ These are the PC and ExpSem described in the paper.
 
 ### Resource collection
 The tool begins by running Resource Collection (Section II-B) on the existing data set to identify additional entities that exist in the data set and to filter the list of entities to those suitable for use in mutation.
-This will populate the data base with the filtered entities, and will re-write the `.label` files in place with the additional entities identified.
+This will populate the database with the filtered entities, and will re-write the `.label` files in place with the additional entities identified.
 
 This process only needs to run once for a given data set. Further details are available in `./genLidarTestTool/controllers/extractInstances`.
 Resource Collection is automatically performed using the `./tool_demo.sh` script for a subset of the SemanticKITTI data set, but would need to be performed manually for using the full data set.
@@ -44,31 +73,6 @@ For each mutation, a `<mutation name>_accuracy.csv` and `<mutation name>_jaccard
 The CSV captures the performance at different levels (called "buckets" in the CSV) corresponding to the epsilon values described in Section IV-C: (1,2], (2,3], (3,4], (4,5], (5,100]
 For the automatic false positive detection discussed in RQ2, each CSV records the mutations where the SUTs failed together. 
 
-## Running the Demo (containerized)
-
-The [/.tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
-The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in Section VI and Table III.
-The tool demo script does not run the SUTs; instructions on how to run the SUT Performance Evaluation portions (Section II-D) are available, though cannot be automated due to anonymization efforts as the tools' source was modified to produce a consistent output format for the tool.
-Additional instructions will be made available upon acceptance.
-
-The demo scripts use [Docker and Docker Compose](https://docs.docker.com/compose/install/) and these must be installed.
-The docker script will download a small subset of the SemantiKITTI dataset, run Resource Collection on this subset, and then generate 5 mutations of each type.
-The selected data will be downloaded in `./selected_data/` and tool demo output will be produced in `./sample_tool_output/`. 
-The output contains the raw `bin` and `label` files, along with visualizations in the `final_viz` folders.
-
-Within the `./selected_data/` folder, the `bin` files are the raw LiDAR point clouds with intensities, and the `label` files contain the ground truth semantic labeling with instances included in the SemanticKITTI format.
-After running the Resource Collection phase, the `label` files will be modified in place to contain the additional entities identified (Section II-B).
-
-Within the `./sample_tool_output/` folder, the new mutations will each be in separate folders of the form `<mutation name>_<timestamp>/`. 
-Each mutation folder will contain a `/output/done/` folder that contains a set of  
-
-
-To run the tool demo, use the following command. Building the Docker containers will take ~10 minutes, downloading and running Resource Collection will take ~10 more minutes, and then running the mutations will take ~10 more. There will be progress announcements throughout.
-```bash
-./tool_demo.sh
-```
-
-
 ---
 # Running Locally and Evaluating SUTs
 The below sections contain information on how to run the tool including SUT evaluation. However, the SUTs are not available upon submission due to anonymization as they were edited to produce consistent output format.
@@ -79,13 +83,13 @@ The SUT code integration will be made available upon release.
 
 ### 0. System Requirements
 - Ubuntu (experiments performed on Ubuntu 18.04)
-- Nvidia GPU (experiments performed with NVIDIA TITAN RTX GPU)
+- Nvidia GPU with CUDA 10.0 and cudnn 7 (experiments performed with NVIDIA TITAN RTX GPU)
 
 
 ### 1. Set up Python Virtual Environment
-- install python3
+- install python3.6
   - sudo apt-get install python3-distutils python3-pip python3-dev python3-venv
-  - Experiments run with with Python 3.6.9
+  - Experiments run with Python 3.6.9
 ```bash
 sudo apt install python3.6-venv
 python3.6 -m venv lidar_venv
@@ -95,7 +99,8 @@ pip3 install -r requirements.txt
 ```
 
 ### 2. Connect & Prepare Mongodb
-- Get a mongodb instance (Free 500 mb instance provided at mongodb atlas)
+- Get a mongodb instance 
+  - Free 500 mb instance provided at mongodb atlas, or set up a local server. The Docker container uses the mongo:5.0.10 image to create a local server. 
 - Create database named: "lidar_data"
 - Within that database create collections named:
     - asset_metadata4
@@ -115,26 +120,38 @@ pip3 install -r requirements.txt
 
 
 #### 3.2 Ground Truth Semantic Labels with Instances
-- Manual prestep
-    - Download from the SemanticKITTI website: http://www.semantic-kitti.org/dataset.html#download
-    - Navigate to controllers/extractInstances to create the label files to match
-- Premade
-    - Download from: 
-    - Matching mongodb assets collection (import) 
-- NOTE the instances must match mongodb instances preloaded
+- Download from the SemanticKITTI website: http://www.semantic-kitti.org/dataset.html#download
+- Navigate to controllers/extractInstances to create the label files to match
 
+#### 3.3 Edit the setup script.
+The `tool/genLidarTestTool/setup.sh` script is used to initialize environment variables pointing to the locations of various data on disk.
 
-#### 3.3 Model Original Predictions
-- Manual prestep
-    - Navigate to controllers/modelBasePred to create the prediction files for the model
-- Premade
-    - Download from: 
-
+Edit the `BIN_PATH` with the location from step 3.1, and the `LABEL_PATH` with the location from step 3.2.
 
 
 ### 4. Set up SUTs
-Directions for setting up from source will be provided with full release.
-However, for anonymization, until then please use the following Docker containers:
+##### Download SUTs
+Each SUT was forked from the original repository and containerized in Docker for ease of use. 
+The `./tool_demo.sh` script will automatically clone the SUT repositories*; if building manually, refer to the README for each SUT.
+Each SUT should be cloned in the same folder so that the tool can access them. 
+By default, the `tool_demo.sh` script places these in `tool/suts`.
+Edit the `setup.sh` script variable `MODEL_DIR` with the folder location.
+The below table contains the information for each of the SUTs.
+
+| SUT Name     | GitHub Link | Commit Used |
+|--------------|-------------|-------------|
+| JS3C-Net     | https://github.com/less-lab-uva/JS3C-Net.git | 3b9dc85721c8609a55eb2f582860c9736c5c79ce |
+| SPVNAS*      | https://github.com/less-lab-uva/spvnas.git | 6185a10c9ea0acc9b9f8d007dd5b0738cb0d6dfa |
+| SalsaNext    | https://github.com/less-lab-uva/SalsaNext.git | bd1308b02e05db982664fae2da04ee709cd14098 |
+| Cylinder3D   | https://github.com/less-lab-uva/Cylinder3D.git | 89215b91aa57dda26ea3b89f0b43139750047ab2 |
+| SqueezeSegV3 | https://github.com/less-lab-uva/SqueezeSegV3.git | 543196b551ea370021533185b4527a326ce2fcf6 |
+
+*Note: Due to NVIDIA driver issues when running the tool inside of Docker, the SPVNAS SUT is not available.
+To utilize the SPVNAS SUT, follow the directions below to set up the tool locally.
+
+#### 4.2 Model Original Predictions
+- From the `tool/genLidarTestTool` folder, run `source setup.sh` to initialize the environment variables.
+- Run `source /root/genLidarTestTool/controllers/modelBasePred/runBaseEval.sh`  
 
 
 ---
@@ -146,11 +163,11 @@ However, for anonymization, until then please use the following Docker container
 - Activate python venv
 - From the `genLidarTestTool` directory run `. setup.sh` (sets up the PYTHONPATH for the tool)
 - in the run file alter the arguments to match your setup
-- ./runToolAndSUTs.sh
+- `./runToolAndSUTs.sh`
     - python genLidarTests.py [args] generates mutations and evaluates them
     - python finalVisualization.py [args] visualizes the top results reported by the finalDetails object produced (see controllers/finalVisualize)
     - python produceCsv.py [args] creates csv files created from the finalDetails object produced (see controllers/analytics)
-    - Note see the controller readmes for more explantation on each of the above scripts 
+    - Note see the controller readmes for more explanation on each of the above scripts 
 
 
 ---

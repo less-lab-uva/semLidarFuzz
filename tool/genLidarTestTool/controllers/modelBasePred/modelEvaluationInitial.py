@@ -155,6 +155,9 @@ def parse_args():
         help="Path to the predictions made by the tools", 
         nargs='?', const="",
         default="")
+    p.add_argument('-models',
+                   help='Models (SUTs) to evaluate comma seperated: cyl,spv,js3c_gpu,sal,sq3',
+                   nargs='?', const="", default="")
     
     return p.parse_args()
 
@@ -169,7 +172,7 @@ def main():
     print("Connected")
 
     args = parse_args()
-    models = ["cyl", "spv", "sal", "sq3", "pol", "js3c_gpu", "js3c_cpu"]
+    models = args.models.split(",")
     labelBasePath = args.labels
     predBasePath = args.pred
 
@@ -196,11 +199,16 @@ def main():
 
         # Get label / pred files sort
         labelFiles = glob.glob(labelPath + "*.label")
-        labelFiles = sorted(labelFiles)  
+        labelFiles = sorted(labelFiles)
+        print(labelPath)
+        print(len(labelFiles))
+        if len(labelFiles) == 0:
+            continue
         predFilesModel = {}
         for model in models:
             predFilesModel[model] = glob.glob(predPaths[model] + "*.label")
             predFilesModel[model] = sorted(predFilesModel[model])
+            print(model, ': ', len(predFilesModel[model]))
         
         for index in range(0, len(labelFiles)):
 

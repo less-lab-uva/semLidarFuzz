@@ -157,9 +157,10 @@ def evalBatch(details, sessionManager,  complete, total):
         shutil.move(sessionManager.stageDir + "/" + detail["_id"] + ".bin", sessionManager.currentVelDir + "/" + detail["_id"] + ".bin")
 
     # run all models on bin files
-    print("Run models")
+    print("Run models:", sessionManager.models)
     modelTimes = {}
     for model in sessionManager.models:
+        print("Running ", model)
         # Get the Model Runner
         if model == Models.CYL.value:
             modelRunner = CylRunner(sessionManager.modelDir)

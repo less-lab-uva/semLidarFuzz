@@ -240,6 +240,7 @@ class SessionManager:
     Selects the models that will be in use
     """
     def prepareModels(self, modelsGiven):
+        print('Given list of models:', len(modelsGiven), modelsGiven)
         if len(modelsGiven) == 0:
             return []
 

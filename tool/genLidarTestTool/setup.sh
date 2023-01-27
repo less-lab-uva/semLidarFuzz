@@ -22,12 +22,12 @@ export LABEL_PATH=""
 # Models original predictions on those scans
 export PRED_PATH=""
 # Path to location of models
-export MODEL_DIR=""  # empty since model source is not provided for anon submission
+export MODEL_DIR="$(pwd)/suts"
 # Path on disk that can be used for temporary files
 export STAGE_DIR="/tmp"
 export MODELS="cyl,spv,js3c_gpu,sal,sq3"
 # flag to not build the models' docker images from source since source is not provided in anon submission
-export DO_NOT_BUILD_MODELS="true"
+export DO_NOT_BUILD_MODELS="false"
 # ------------------------------------------------------------------------
 
 # Python Path, should be the root of the tool (where this script is)

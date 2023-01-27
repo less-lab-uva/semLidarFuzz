@@ -2,6 +2,9 @@ selected_data
 .bash_history
 .keep
 sample_tool_output
+tool/genLidarTestTool/suts
+.sut
+.wget-hsts
 # -------------------------------------------------------------------
 # gitignore
 # 

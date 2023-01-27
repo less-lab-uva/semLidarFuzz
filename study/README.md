@@ -17,21 +17,6 @@ There will be progress updates throughout.
 The console output for running this command which contains the tables shown in the paper are in [output.txt](output.txt).
 The figures generated are shown in [figures/](./figures).
 
-### Typo in Table IV in the paper
-***NOTE***: There is a typo in Table IV of the table, where the data are off by 1 percentage point for the Jaccard metric. The correct table is contained in the output.txt and replicated here:
-
-|Mutation|Acc. TP | Acc. FP | Jacc. TP | Jacc. FP |
-|--------|--------|---------|----------|----------|
-|Add Rotate| 39 |  2| 634 |  77 |
-|Add Mirror Rotate| 42 |  2| 672 |  79 |
-|Remove| 6 |  ---| 26 |  --- |
-|Vehicle Intensity| 63 |  2| 178 |  4 |
-|Vehicle Deform| 5 |  ---| 10 |  --- |
-|Vehicle Scale| 12 |  ---| 81 |  14 |
-|Sign Replace| --- |  ---| 37 |  1 |
-|Total| 167 |  6| 1638 |  175 |
-| % | (97%) |  (3%)| (90%) |  (10%) |
-
 ### The study_data folder
 The `./study_data/` folder contains the mutations generated and SUTs' performances evaluated for the study described in Section IV.
 For information about the format of this folder and what information it contains, please see the `../tool/` [README](../tool/README.md).

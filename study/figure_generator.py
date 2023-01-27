@@ -48,13 +48,13 @@ def normalize_name(mut_name):
     return new_name[:-1]
 
 
-def set_bar_text(ax, bar, zero_height=0.8):
+def set_bar_text(ax, bar, zero_height=0.8, bar_height_factor=0.2):
     height = bar.get_height()
     label = str(int(height))
     for _ in range(1 * (3 - len(label))):
         label = ' ' + label
     y = zero_height if height == 0 else height * 1.02  # mult becomes add in log scale
-    ax.text(bar.get_x() + bar.get_width() * 0.2, y, label, va='bottom', rotation=90)
+    ax.text(bar.get_x() + bar.get_width() * bar_height_factor, y, label, va='bottom', rotation=90)
 
 
 def set_barh_text(ax, bar, zero_height=0.8, bar_height_factor=0.1):
@@ -260,8 +260,7 @@ if __name__ == '__main__':
             jacc_all_overlap_counts[count] += amount
 
     # https://stackoverflow.com/questions/3899980/how-to-change-the-font-size-on-a-matplotlib-plot
-    font = {'weight': 'bold', 'size': 14}
-
+    font = {'weight': 'bold', 'size': 20}
     matplotlib.rc('font', **font)
     print('Generating figures for all mutations')
     hatches = ['x', '*', '.', '-', '/', '+', '\\']
@@ -301,7 +300,7 @@ if __name__ == '__main__':
                     amounts = [all_failure_counts[model][bucket] for bucket in bucketKeysInvariant[bucket_offset:]]
                     bars = ax.bar(X + width * index, amounts, width=width, hatch=hatches[index], color=colors[index], log=True)
                     for bar in bars:
-                        set_bar_text(ax, bar)
+                        set_bar_text(ax, bar, bar_height_factor=0.0)
                 # ax.set_title('Failures found for different levels of $\\epsilon$ ' + name)
                 ax.set_ylabel('Number of Failures (Log)')
                 ax.set_xlabel(name + ' drop threshold (%)')
@@ -338,7 +337,7 @@ if __name__ == '__main__':
             cur_counts = [acc_all_failure_counts, jacc_all_failure_counts]
         print('Generating figures for', title)
         subfig.suptitle(title, fontweight='bold')
-        ind_fig = plt.figure(figsize=(16, 10))
+        ind_fig = plt.figure(figsize=(16, 12))
         # ind_fig.suptitle(title, fontweight='bold')
         ind_axes = ind_fig.subplots(1, 2)
         # ylim_top = None
@@ -349,7 +348,7 @@ if __name__ == '__main__':
                     amounts = [all_failure_counts[model][bucket] for bucket in bucketKeysInvariant[bucket_offset:]]
                     bars = ax.barh(X + width * index, amounts, height=width, hatch=hatches[index], color=colors[index], log=True)
                     for bar in bars:
-                        set_barh_text(ax, bar)
+                        set_barh_text(ax, bar, bar_height_factor=0.0)
                 # ax.set_title('Failures found for different levels of $\\epsilon$ ' + name)
                 ax.set_xlabel('Number of Failures (Log)')
                 ax.set_ylabel(name + ' drop threshold (%)')
@@ -365,7 +364,8 @@ if __name__ == '__main__':
                 offset = ScaledTranslation(dx, dy, fig.dpi_scale_trans)
                 for label in ax.yaxis.get_majorticklabels():
                     label.set_transform(label.get_transform() + offset)
-                ax.legend(labels=[model_name[model] for model in modelsInvariant])
+                if in_idx == 0:
+                    ax.legend(labels=[model_name[model] for model in modelsInvariant])
         ind_fig.tight_layout()
         ind_fig.savefig('./figures/%s_horiz.png' % title, bbox_inches='tight', dpi=100)
         plt.close(ind_fig)
@@ -387,7 +387,7 @@ if __name__ == '__main__':
             bars = ax.bar(X + width * index, amounts, width=width, hatch=hatches[index], color=colors[index],
                           log=True)
             for bar in bars:
-                set_bar_text(ax, bar)
+                set_bar_text(ax, bar, bar_height_factor=0.0)
             ax.set_ylabel('Number of Failures (Log)')
             ax.set_xlabel(name)
             # ax.set_ylim(bottom=0.5, top=ylim_top)
@@ -401,7 +401,7 @@ if __name__ == '__main__':
 
     print('Generating figure for only largest failures')
     # Only bucket 6
-    fig = plt.figure(figsize=(16, 10))
+    fig = plt.figure(figsize=(16, 13))
     axes = fig.subplots(1, 2, sharey=True)
     X = -np.arange(len(mut_names))
     for in_idx, (name, failure_counts) in \
@@ -412,7 +412,7 @@ if __name__ == '__main__':
             bars = ax.barh(X + width * index, amounts, height=width, hatch=hatches[index], color=colors[index],
                           log=True)
             for bar in bars:
-                set_barh_text(ax, bar, bar_height_factor=0)
+                set_barh_text(ax, bar, bar_height_factor=-0.2)
             ax.set_xlabel('Number of Failures (Log)')
             # ax.set_ylabel(name)
             # ax.set_ylim(bottom=0.5, top=ylim_top)
@@ -428,10 +428,13 @@ if __name__ == '__main__':
             offset = ScaledTranslation(dx, dy, fig.dpi_scale_trans)
             for label in ax.yaxis.get_majorticklabels():
                 label.set_transform(label.get_transform() + offset)
-            ax.legend(labels=[model_name[model] for model in modelsInvariant])
+            if in_idx == 0:
+                ax.legend(labels=[model_name[model] for model in modelsInvariant])
     fig.savefig('./figures/biggest_failures_horiz.png', bbox_inches='tight', dpi=100)
     plt.close(fig)
 
+    font = {'weight': 'bold', 'size': 14}
+    matplotlib.rc('font', **font)
     print('Generating figures for false positive rates')
     subfig_count = (len(mut_names) + 1)
     row_count = 8

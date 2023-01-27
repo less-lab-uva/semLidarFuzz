@@ -65,12 +65,17 @@ class DockerRunner:
         dockerRunCommand += " --user {}".format(os.getuid())
         # Prevents an out of memory error for some models
         dockerRunCommand += " --ipc=host"
-        # Bind mount the model directory
-        dockerRunCommand += " --mount type=bind,source={},target={}".format(self.modelDir, self.modelDir)
-        # Bind mount the data to predict
-        dockerRunCommand += " --mount type=bind,source={},target={}".format(dataDir, dataDir)
-        # Bind mount the location to store the predictions
-        dockerRunCommand += " --mount type=bind,source={},target={}".format(predictionDir, predictionDir)
+        dockerContainer = os.environ.get('RUNNING_IN_DOCKER')
+        if dockerContainer is not None:
+            print('Tool is running in docker')
+            dockerRunCommand += " --volumes-from {}".format(dockerContainer)
+        else:
+            # Bind mount the model directory
+            dockerRunCommand += " --mount type=bind,source={},target={}".format(self.modelDir, self.modelDir)
+            # Bind mount the data to predict
+            dockerRunCommand += " --mount type=bind,source={},target={}".format(dataDir, dataDir)
+            # Bind mount the location to store the predictions
+            dockerRunCommand += " --mount type=bind,source={},target={}".format(predictionDir, predictionDir)
         # The image to use
         dockerRunCommand += " {}".format(self.image)
         # Command to run the model
@@ -91,12 +96,12 @@ class DockerRunner:
     Removes the containers
     """
     def removeContainer(self):
-        print("Attmpeting to Remove Container {}".format(self.modelDirName))
+        print("Attempting to Remove Container {}".format(self.modelDirName))
 
         # Docker Cleanup
         # dockerCleanCommand = "container stop {}".format(self.container)
         # dockerCleanCommand = " && docker container rm {}".format(self.container)
-        dockerCleanCommand = "docker container stop {} && docker container rm {}".format(self.container, self.container)
+        dockerCleanCommand = "docker container stop {} && docker container rm {} 2>/dev/null".format(self.container, self.container)
 
 
         # Clean up the docker container
