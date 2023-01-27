@@ -7,7 +7,7 @@ We propose a new technique in testing LiDAR-based perception systems that takes 
 **Example point cloud and labelling**
 <div style="white-space: nowrap">
   <img src="./images/pc/lidar_scene_intensities.png" width="300" alt="Example Point Cloud (PC)">
-  <img src="./images/pc/lidar_scene_labeled.png" width="300" alt="Example Labelling (ExpSem)">
+  <img src="./images/pc/lidar_scene_labeled.png" width="300" alt="Example Labeling (ExpSem)">
 </div>
 
 
@@ -16,20 +16,14 @@ We propose a new technique in testing LiDAR-based perception systems that takes 
 <table>
 <tr><th><b>Adding Entities</b></th><th><b>Removing Entities</b></th><th><b>Altering Entities</b></th></tr>
 <tr><td>
-
-![Initial Point Cloud (PC)](./images/cropped/add_rotate_example_before.png)
-
-![After Adding a Car (PC')](./images/cropped/add_rotate_example_after.png)
+<img src="./images/cropped/add_rotate_example_before.png" width="150" alt="Initial Point Cloud (PC)"><br>
+<img src="./images/cropped/add_rotate_example_after.png" width="150" alt="After Adding a Car (PC')">
 </td><td>
-
-![Initial Point Cloud (PC)](./images/cropped/scene_remove_example_before.png)
-
-![After Removing a Sign (PC')](./images/cropped/scene_remove_example_after.png)
+<img src="./images/cropped/scene_remove_example_before.png" width="150" alt="Initial Point Cloud (PC)"><br>
+<img src="./images/cropped/scene_remove_example_after.png" width="150" alt="After Removing a Sign (PC')">
 </td><td>
-
-![Initial Point Cloud (PC)](./images/cropped/deform_example_before.png)
-
-![After Deforming a Sign (PC')](./images/cropped/deform_example_after.png)
+<img src="./images/cropped/deform_example_before.png" width="150" alt="Initial Point Cloud (PC)"><br>
+<img src="./images/cropped/deform_example_after.png" width="150" alt="After Deforming a Vehicle (PC')">
 </td></tr></table>
 
 ## Running the Demo
