@@ -1,3 +1,20 @@
+#
+if ! command -v nvidia-docker &> /dev/null
+then
+    echo "nvidia-docker could not be found"
+    echo "Please see the README. Verify CUDA/cudnn installation; you likely need to run sudo source ./install_nvidia_docker.sh"
+    exit
+fi
+
+if ! command -v docker-compose &> /dev/null
+then
+    echo "docker-compose could not be found. This script relies on the original docker-compose rather than docker compose."
+    echo "docker-compose can be installed as follows:"
+    echo "sudo curl -L \"https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose"
+    echo "sudo chmod +x /usr/local/bin/docker-compose"
+    exit
+fi
+
 # Move on to tool setup
 export PYTHONPATH=/root/genLidarTestTool
 export DISPLAY=":0"

@@ -1,3 +1,12 @@
+if ! command -v docker-compose &> /dev/null
+then
+    echo "docker-compose could not be found. This script relies on the original docker-compose rather than docker compose."
+    echo "docker-compose can be installed as follows:"
+    echo "sudo curl -L \"https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose"
+    echo "sudo chmod +x /usr/local/bin/docker-compose"
+    exit
+fi
+
 printf "Setting up Docker container\n"
 docker-compose up --build -d
 printf "Checking if study data has been downloaded\n"
