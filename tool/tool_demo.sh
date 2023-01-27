@@ -2,7 +2,8 @@
 if ! command -v nvidia-docker &> /dev/null
 then
     echo "nvidia-docker could not be found"
-    echo "Please see the README. Verify CUDA/cudnn installation; you likely need to run sudo source ./install_nvidia_docker.sh"
+    echo "Please see the README. Verify CUDA/cudnn installation; you likely need to run"
+    echo "sudo ./install_nvidia_docker.sh"
     exit
 fi
 
