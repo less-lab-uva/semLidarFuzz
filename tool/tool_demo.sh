@@ -8,7 +8,7 @@ export STAGING_DIR=/root/tmp/dataset/sequences/00/velodyne/
 export PRED_PATH=/root/pred_data/
 export LABEL_PATH=/root/selected_data/semantic_kitti_labels/dataset/sequences/
 export BIN_PATH=/root/selected_data/semantic_kitti_pcs/dataset/sequences/
-export MODELS="cyl,js3c_gpu,sal"
+export MODELS="cyl,js3c_gpu,sal,sq3"
 printf "Setting up Docker container\n"
 docker-compose up --build -d
 if test -f ".keep" ; then
@@ -25,6 +25,7 @@ fi
 docker-compose exec gen_lidar_tests bash -c "mkdir $PRED_PATH 2>/dev/null"
 
 printf "Setting up SUTs\n"
+printf "ALL SYSTEMS PROVIDED BELOW ARE COPYRIGHT AND LICENSED BY THEIR RESPECTIVE OWNERS.\nEACH SYSTEM IS COVERED UNDER THEIR RESPECTIVE LICENSE TERMS WHICH CAN BE FOUND AT THE LINK BELOW.\nTHE SCRIPTS PROVIDED WITH THIS TOOL UTILIZE, COPY, AND MODIFY THE FOLLOWING SOFTWARE IN ACCORDANCE WITH THEIR RESPECTIVE LICENSE TERMS.\nTHE LICENSE TERMS OF THIS SOFTWARE DO NOT EXTEND TO THE SYSTEMS INCLUDED BELOW FOR EVALUATION PURPOSES.\n"
 cd genLidarTestTool
 mkdir suts 2>/dev/null
 cd suts
@@ -40,7 +41,7 @@ git checkout bd1308b02e05db982664fae2da04ee709cd14098
 if test -f ".keep" ; then
   printf "Pretrained data already downloaded\n"
 else
-  docker-compose exec gen_lidar_tests bash -c "wget -O /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz https://zenodo.org/record/7574602/files/pretrained.tar.xz?download=1 && printf \"Extracting training data to /root/genLidarTestTool/suts/SalsaNext/pretrained, this may take a moment\n\" && mkdir /root/genLidarTestTool/suts/SalsaNext/pretrained 2>/dev/null && tar -xf /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz -C /root/genLidarTestTool/suts/SalsaNext/pretrained --strip-components=1 --checkpoint=.250 && rm /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz" && \
+  docker-compose exec gen_lidar_tests bash -c "wget -O /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz https://zenodo.org/record/7574602/files/pretrained.tar.xz?download=1 && printf \"Extracting pretrained data to /root/genLidarTestTool/suts/SalsaNext/pretrained, this may take a moment\n\" && mkdir /root/genLidarTestTool/suts/SalsaNext/pretrained 2>/dev/null && tar -xf /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz -C /root/genLidarTestTool/suts/SalsaNext/pretrained --strip-components=1 --checkpoint=.250 && rm /root/genLidarTestTool/suts/SalsaNext/pretrained.tar.xz" && \
   touch .keep
 fi
 cd ..
@@ -48,11 +49,23 @@ cd ..
 git clone https://github.com/less-lab-uva/Cylinder3D.git
 cd Cylinder3D
 git checkout 89215b91aa57dda26ea3b89f0b43139750047ab2
+if test -f ".keep" ; then
+  printf "Pretrained data already downloaded\n"
+else
+  docker-compose exec gen_lidar_tests bash -c "wget -O /root/genLidarTestTool/suts/Cylinder3D/model_save_backup.pt https://zenodo.org/record/7576239/files/model_save_backup.pt?download=1" && \
+  touch .keep
+fi
 cd ..
 # SqueezeSegV3
 git clone https://github.com/less-lab-uva/SqueezeSegV3.git
 cd SqueezeSegV3
 git checkout 543196b551ea370021533185b4527a326ce2fcf6
+if test -f ".keep" ; then
+  printf "Pretrained data already downloaded\n"
+else
+  docker-compose exec gen_lidar_tests bash -c "wget -O /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53.tar.xz https://zenodo.org/record/7576175/files/SSVG3-53.tar.xz?download=1 && printf \"Extracting pretrained data to /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53, this may take a moment\n\" && mkdir /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53 2>/dev/null && tar -xf /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53.tar.xz -C /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53 --strip-components=1 --checkpoint=.250 && rm /root/genLidarTestTool/suts/SqueezeSegV3/SSGV3-53.tar.xz" && \
+  touch .keep
+fi
 cd ..
 cd ../..
 export models=$MODELS
@@ -87,3 +100,4 @@ do
   docker-compose exec gen_lidar_tests bash -c "python3 /root/genLidarTestTool/controllers/analytics/produceCsv.py -data \"$outputDir\" -mdb \"$MONGO_CONNECT\" -saveAt $outputDir"
 done
 docker-compose exec gen_lidar_tests bash -c "rm -rf /root/.nv 2>/dev/null" 2>/dev/null
+printf "Data has been saved to semLidarFuzz/tool/sample_tool_output.\nEach mutation has a separate folder containing the SUT performance in csv files in the output/ folder.\nThe output/finalvis/<mutation_name>/ folder contains visualizations of the mutation as well as SUT performance.\nGiven the small number of mutations created during the demo, it is normal to not find any failures.\n"

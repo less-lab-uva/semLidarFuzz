@@ -138,6 +138,11 @@ By default, the `tool_demo.sh` script places these in `tool/suts`.
 Edit the `setup.sh` script variable `MODEL_DIR` with the folder location.
 The below table contains the information for each of the SUTs.
 
+ALL SYSTEMS PROVIDED BELOW ARE COPYRIGHT AND LICENSED BY THEIR RESPECTIVE OWNERS.
+EACH SYSTEM IS COVERED UNDER THEIR RESPECTIVE LICENSE TERMS WHICH CAN BE FOUND AT THE LINK BELOW.
+THE SCRIPTS PROVIDED WITH THIS TOOL UTILIZE, COPY, AND MODIFY THE FOLLOWING SOFTWARE IN ACCORDANCE WITH THEIR RESPECTIVE LICENSE TERMS.
+THE LICENSE TERMS OF THIS SOFTWARE DO NOT EXTEND TO THE SYSTEMS INCLUDED BELOW FOR EVALUATION PURPOSES.
+
 | SUT Name     | GitHub Link | Commit Used |
 |--------------|-------------|-------------|
 | JS3C-Net     | https://github.com/less-lab-uva/JS3C-Net.git | 3b9dc85721c8609a55eb2f582860c9736c5c79ce |

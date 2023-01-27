@@ -26,4 +26,4 @@ services:
       PRED_PATH: /root/pred_data/
       LABEL_PATH: /root/selected_data/semantic_kitti_labels/dataset/sequences/
       BIN_PATH: /root/selected_data/semantic_kitti_pcs/dataset/sequences/
-      MODELS: "cyl,js3c_gpu,sal"
+      MODELS: "cyl,js3c_gpu,sal,sq3"
