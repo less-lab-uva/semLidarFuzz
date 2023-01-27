@@ -21,7 +21,7 @@ Within the `./sample_tool_output/` folder, the new mutations will each be in sep
 Each mutation folder will contain a `/output/done/` folder that contains a set of  
 
 
-To run the tool demo, use the following command. Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more, and then the SUTs will take ~10 more. There will be progress announcements throughout.
+To run the tool demo, use the following command. Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more, and then the SUTs will take ~10 more. There will be progress announcements throughout. Note: This has been narrowly evaluated on Ubuntu 18.04 with NVIDIA CUDA 10.0 and cudnn 7.0 and nvidia-docker support.
 ```bash
 cd ./tool/
 ./tool_demo.sh
@@ -29,6 +29,12 @@ cd ./tool/
 
 
 Note: if you encounter an NVIDIA docker issue, check that you have CUDA 10.0 installed and run `sudo source ./install_nvidia_docker.sh`
+
+If the NVIDIA docker issue cannot be resolved on your system, the SUTs will not run. Instead, the mutation generation portion can be evaluated by the following script. This has been validated on Ubuntu 18.04 and 20.04.
+```bash
+cd ./tool/
+./tool_demo_no_sut.sh
+```
 
 After running, the script will output the following:
 ```
