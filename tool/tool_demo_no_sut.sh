@@ -1,3 +1,13 @@
+if ! command -v docker-compose &> /dev/null
+then
+    echo "docker-compose could not be found. This script relies on the original docker-compose rather than docker compose."
+    echo "docker-compose can be installed as follows, though if this does not work please consult the Docker documentation for your OS:"
+    echo "sudo curl -L \"https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose"
+    echo "sudo chmod +x /usr/local/bin/docker-compose"
+    exit
+fi
+
+
 export PYTHONPATH=/root/genLidarTestTool
 export DISPLAY=":0"
 export RUNNING_IN_DOCKER=gen_lidar_tests
