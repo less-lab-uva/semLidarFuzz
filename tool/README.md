@@ -38,8 +38,9 @@ Given the small number of mutations created during the demo, it is normal to not
 ```
 
 Below is an example of one of the generated visualizations:
+
 <div style="white-space: nowrap">
-  <img src="./images/GzpJLZyxEo5T3eWe33fvK6-ADD_MIRROR_ROTATE.png" width="300" alt="Example Visualization">
+  <img src="../images/GzpJLZyxEo5T3eWe33fvK6-ADD_MIRROR_ROTATE.png" width="300" alt="Example Visualization">
 </div>
 
 ---
