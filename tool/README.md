@@ -5,7 +5,7 @@ Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Syste
 ## Running the Demo (containerized)
 Abbreviated instructions and example output available in the [INSTALL.md](../INSTALL.md) file.
 
-The [./tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
+The [./tool directory](./tool) contains the source code for the tool as well as a script (`tool/tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
 The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in Section VI and Table III.
 The `./tool_demo.sh` script generates data and also runs the SUTs evaluated in the study; to skip this and only perform data generation, use `./tool_demo_no_sut.sh`.
 
@@ -23,6 +23,7 @@ Each mutation folder will contain a `/output/done/` folder that contains a set o
 
 To run the tool demo, use the following command. Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more, and then the SUTs will take ~10 more. There will be progress announcements throughout.
 ```bash
+cd ./tool/
 ./tool_demo.sh
 ```
 
