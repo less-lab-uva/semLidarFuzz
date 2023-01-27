@@ -33,10 +33,9 @@ We propose a new technique in testing LiDAR-based perception systems that takes 
 </td></tr></table>
 
 ## Running the Demo
-The [/.tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
+The [./tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
 The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in the Section VI Table III.
-The tool demo script does not run the SUTs; instructions on how to run the SUT Performance Evaluation portions (Section II-D) are available, though cannot be automated due to anonymization efforts as the tools' source was modified to produce a consistent output format for the tool.
-Additional instructions will be made available upon acceptance.
+The tool demo script does not run the SUTs; instructions on how to run the SUT Performance Evaluation portions (Section II-D) are available, and the SUTs that were able to be automated have been included in the script.
 
 The demo scripts use [Docker and Docker Compose](https://docs.docker.com/compose/install/) and these must be installed.
 The docker script will download a small subset of the SemantiKITTI dataset, run Resource Collection on this subset, and then generate 5 mutations of each type.
