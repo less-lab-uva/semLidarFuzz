@@ -3,6 +3,7 @@
 Tool for Generating Realistic and Diverse Tests for LiDAR-Based Perception Systems.
 
 ## Running the Demo (containerized)
+Abbreviated instructions and example output available in the [INSTALL.md](../INSTALL.md) file.
 
 The [./tool directory](./tool) contains the source code for the tool as well as a script (`./tool_demo.sh`) for running a minimal complete example of the mutations implemented in the tool and explored in the study.
 The tool begins by performing Resource Collection (Approach in Section II-B, Implementation in Section III-A), then generates the 7 mutations discussed in Section VI and Table III.
@@ -28,6 +29,18 @@ To run the tool demo, use the following command. Building the Docker containers 
 
 Note: if you encounter an NVIDIA docker issue, check that you have CUDA 10.0 installed and run `sudo source ./install_nvidia_docker.sh`
 
+After running, the script will output the following:
+```
+Data has been saved to semLidarFuzz/tool/sample_tool_output.
+Each mutation has a separate folder containing the SUT performance in csv files in the output/ folder.
+The output/finalvis/<mutation_name>/ folder contains visualizations of the mutation as well as SUT performance.
+Given the small number of mutations created during the demo, it is normal to not find any failures.
+```
+
+Below is an example of one of the generated visualizations:
+<div style="white-space: nowrap">
+  <img src="./images/GzpJLZyxEo5T3eWe33fvK6-ADD_MIRROR_ROTATE.png" width="300" alt="Example Visualization">
+</div>
 
 ---
 
