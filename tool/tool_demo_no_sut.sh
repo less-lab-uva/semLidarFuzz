@@ -54,3 +54,4 @@ do
   # the Xvfb parts are to account for the fact we are running in a container without proper display access
   docker-compose exec gen_lidar_tests bash -c "(pgrep -x Xvfb >/dev/null || Xvfb :0 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &) && python3 /root/genLidarTestTool/controllers/finalVisualize/finalVisualization.py -binPath /root/selected_data/semantic_kitti_pcs/dataset/sequences -labelPath /root/selected_data/semantic_kitti_labels/dataset/sequences -mdb /root/mongoconnect.txt -saveAt $outputDir -toolOutputPath $outputDir -vis_all"
 done
+printf "Data has been saved to semLidarFuzz/tool/sample_tool_output.\nEach mutation has a separate folder containing the generated mutations.\nThe output/finalvis/<mutation_name>/ folder contains visualizations of the mutation.\n"
