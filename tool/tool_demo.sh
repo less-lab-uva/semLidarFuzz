@@ -4,6 +4,8 @@ then
     echo "nvidia-docker could not be found"
     echo "Please see the README. Verify CUDA/cudnn installation; you likely need to run"
     echo "sudo ./install_nvidia_docker.sh"
+    echo "If this does not resolve the issue on your platform, please run ./tool_demo_no_sut.sh"
+    echo "Without nvidia-docker, the SUTs will not run but the mutation generation portion of the tool can still be validated."
     exit
 fi
 
