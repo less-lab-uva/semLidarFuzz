@@ -1,3 +1,12 @@
+if ! command -v docker-compose &> /dev/null
+then
+    echo "docker-compose could not be found. This script relies on the original docker-compose rather than docker compose."
+    echo "docker-compose can be installed as follows, though if this does not work please consult the Docker documentation for your OS:"
+    echo "sudo curl -L \"https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose"
+    echo "sudo chmod +x /usr/local/bin/docker-compose"
+    exit
+fi
+
 if test -f ".docker" ; then
   printf "One time Docker image download has already been completed, skipping.\n"
 else
@@ -7,6 +16,7 @@ else
   curl https://zenodo.org/record/7627337/files/lidar_tests_mongo.docker.tar.gz?download=1 | docker load && \
   touch .docker
 fi
+
 export PYTHONPATH=/root/genLidarTestTool
 export DISPLAY=":0"
 export RUNNING_IN_DOCKER=gen_lidar_tests
@@ -53,3 +63,4 @@ do
   # the Xvfb parts are to account for the fact we are running in a container without proper display access
   docker-compose exec gen_lidar_tests bash -c "(pgrep -x Xvfb >/dev/null || Xvfb :0 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &) && python3 /root/genLidarTestTool/controllers/finalVisualize/finalVisualization.py -binPath /root/selected_data/semantic_kitti_pcs/dataset/sequences -labelPath /root/selected_data/semantic_kitti_labels/dataset/sequences -mdb /root/mongoconnect.txt -saveAt $outputDir -toolOutputPath $outputDir -vis_all"
 done
+printf "Data has been saved to semLidarFuzz/tool/sample_tool_output.\nEach mutation has a separate folder containing the generated mutations.\nThe output/finalvis/<mutation_name>/ folder contains visualizations of the mutation.\n"

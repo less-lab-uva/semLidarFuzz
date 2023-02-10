@@ -1,7 +1,20 @@
+* [Full Demo with SUTs](#running-the-containerized-demo)
+* [Mutation Generation Demo without SUTs](#running-without-suts)
+* [Recreating Figures & Tables](#recreating-study-figures)
+* [Installing Locally (not recommended)](#installing-locally)
+
 # Running the Containerized Demo
 For artifact evaluation or for a short demonstration of the tool, use the [./tool_demo.sh](./tool/tool_demo.sh) file.
+This script has only been narrowly validated on Ubuntu 18.04 with CUDA 10.0 and cudnn 7.0. 
+If you encounter issues running the `./tool/tool_demo.sh` script, the section below ["Running without SUTs"](#running-without-suts) contains information on running the minimal version of the mutation generation section of the tool.
+
 This executable shell script will build, download, and setup all of the necessary dependencies using Docker Compose.
 The [./tool README](./tool/README.md) contains more information.
+
+```bash
+cd ./tool/
+./tool_demo.sh
+```
 
 While running, the script will output various messages detailing the status of the installation and tool run.
 Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more, and then the SUTs will take ~10 more.
@@ -77,6 +90,37 @@ Below is an example of one of the generated visualizations:
 <div style="white-space: nowrap">
   <img src="./images/GzpJLZyxEo5T3eWe33fvK6-ADD_MIRROR_ROTATE.png" width="300" alt="Example Visualization">
 </div>
+
+# Running without SUTs
+This script will run the mutation generation portion of the tool, but will not run the SUTs on the generated test cases.
+This is useful as the GPU/Docker integration to run the SUTs works in a much narrower range of environments. 
+This script has been validated on Ubuntu 18.04 and Ubuntu 20.04.
+
+```bash
+cd ./tool/
+./tool_demo_no_sut.sh
+```
+
+While running, the script will output various messages detailing the status of the installation and tool run.
+Building the Docker containers will take ~20 minutes, downloading and running Resource Collection will take ~10 more minutes, running the mutations will take ~10 more.
+Once initial builds have been completed, subsequent runs should take ~10 min. 
+Note that warning/status messages may appear from internal components; these are normal.
+
+After completion, the script will display:
+```
+Data has been saved to semLidarFuzz/tool/sample_tool_output.
+Each mutation has a separate folder containing the generated mutations.
+The output/finalvis/<mutation_name>/ folder contains visualizations of the mutation.
+```
+
+
+Below is an example of one of the generated visualizations:
+<div style="white-space: nowrap">
+  <img src="./images/EpAbEdZsRNACQ4d83cLA7Q-VEHICLE_DEFORM.png" width="300" alt="Example Visualization">
+</div>
+
+# Recreating Study Figures
+The complete raw data from the study is available on Zenodo. We provide the [./study/generate_figures.sh](./study/generate_figures.sh) script which will download the study data and recreate all of the figures and tables from the study. Please see the [study README](./study) for more information and additional discussion on study results.
 
 # Installing Locally
 To install the tool locally, follow instructions in the [./tool README](./tool/README.md).

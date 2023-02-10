@@ -7,4 +7,4 @@ RUN pip3 install matplotlib==3.5.2
 
 # used for unzipping the study data
 RUN apt-get update
-RUN apt-get install xz-utils
+RUN apt-get install xz-utils wget -y
