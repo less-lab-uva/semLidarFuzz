@@ -1,0 +1,1 @@
+docker build -t study_figs:latest . && touch .docker

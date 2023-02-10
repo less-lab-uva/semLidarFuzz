@@ -16,6 +16,15 @@ then
     exit
 fi
 
+if test -f ".docker" ; then
+  printf "One time Docker image download has already been completed, skipping.\n"
+else
+  printf "Downloading pre-build Docker images from Zenodo. This download is ~2.5GB and may take quite a while.\n"
+  printf "You may instead build the Docker image locally using ./build_docker.sh, which may be much faster.\n"
+  curl https://zenodo.org/record/7627337/files/gen_lidar_tests.docker.tar.gz?download=1 | docker load && \
+  curl https://zenodo.org/record/7627337/files/lidar_tests_mongo.docker.tar.gz?download=1 | docker load && \
+  touch .docker
+fi
 # Move on to tool setup
 export PYTHONPATH=/root/genLidarTestTool
 export DISPLAY=":0"

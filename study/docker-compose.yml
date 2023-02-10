@@ -2,7 +2,6 @@ version: '3'
 services:
   figs:
     container_name: figs
-    build: .
-    command: tail -f /dev/null
+    image: study_figs:latest
     volumes:
       - ./:/root/

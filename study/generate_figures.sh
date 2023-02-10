@@ -7,6 +7,15 @@ then
     exit
 fi
 
+if test -f ".docker" ; then
+  printf "One time Docker image download has already been completed, skipping.\n"
+else
+  printf "Downloading pre-build Docker images from Zenodo. This download is ~150MB and may take a while.\n"
+  printf "You may instead build the Docker image locally using ./build_docker.sh, which may be much faster.\n"
+  curl https://zenodo.org/record/7627337/files/lidar_tests_study_figs.docker.tar.gz?download=1 | docker load && \
+  touch .docker
+fi
+
 printf "Setting up Docker container\n"
 docker-compose up --build -d
 printf "Checking if study data has been downloaded\n"
