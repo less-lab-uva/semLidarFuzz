@@ -3,22 +3,6 @@ As discussed in the paper, humans are not well suited to judge the realism of Li
 Here we give several examples of true and false positives identified in the study.
 
 
-## Typo in Table IV in the paper
-***NOTE***: There is a typo in Table IV of the table, where the data are off by 1 percentage point for the Jaccard metric. The correct table is contained in the output.txt and replicated here:
-
-|Mutation|Acc. TP | Acc. FP | Jacc. TP | Jacc. FP |
-|--------|--------|---------|----------|----------|
-|Add Rotate| 39 |  2| 634 |  77 |
-|Add Mirror Rotate| 42 |  2| 672 |  79 |
-|Remove| 6 |  ---| 26 |  --- |
-|Vehicle Intensity| 63 |  2| 178 |  4 |
-|Vehicle Deform| 5 |  ---| 10 |  --- |
-|Vehicle Scale| 12 |  ---| 81 |  14 |
-|Sign Replace| --- |  ---| 37 |  1 |
-|Total| 167 |  6| 1638 |  175 |
-| % | (97%) |  (3%)| (90%) |  (10%) |
-
-
 ## False Positives
 As discussed in Section IV-C-3, the voting mechanism sets a threshold, V, for determining if a test case is a false positive based on if V or more SUTs failed on that test case.
 In Table IV, shown above, we use V=3 as the threshold. Below we examine several examples of false positives found:
@@ -130,3 +114,21 @@ SalsaNext Performance:
 
 SqueezeNetV3:
 ![SqueezeNetV3 Performance](./images/sq3-new-HJe3F3zsurqnDWGLY5wgMY-ADD_MIRROR_ROTATE.png)
+
+## Different choices of `V`
+Note, the columns here are *not* cummulative. 
+When evaluating false positives as in the study, a false positive is determined based on a number of SUTs greater than or equal to `V`.
+This table is presented based on equal to `V`. Sum the columns to the right to find the aggregate false positive metric.
+<table>
+<tr><th></th><th colspan="6">Accuracy</th><th colspan="6">Jaccard</th></tr>
+<tr><td>Mutation </td><td> Total </td><td> 1 SUT </td><td> 2 SUTs </td><td> 3 SUTs </td><td> 4 SUTs </td><td> 5 SUTs </td><td> Total </td><td> 1 SUT </td><td> 2 SUTs </td><td> 3 SUTs </td><td> 4 SUTs </td><td> 5 SUTs</td></tr>
+<tr><td>Add Rotate</td><td>41 </td><td> 27 </td><td> 12 </td><td> 1 </td><td> 1 </td><td> ---</td><td>711 </td><td> 430 </td><td> 204 </td><td> 56 </td><td> 16 </td><td> 5</td></tr>
+<tr><td>Add Mirror Rotate</td><td>44 </td><td> 35 </td><td> 7 </td><td> 2 </td><td> --- </td><td> ---</td><td>751 </td><td> 433 </td><td> 239 </td><td> 61 </td><td> 12 </td><td> 6</td></tr>
+<tr><td>Remove</td><td>6 </td><td> 6 </td><td> --- </td><td> --- </td><td> --- </td><td> ---</td><td>26 </td><td> 25 </td><td> 1 </td><td> --- </td><td> --- </td><td> ---</td></tr>
+<tr><td>Vehicle Intensity</td><td>65 </td><td> 55 </td><td> 8 </td><td> 2 </td><td> --- </td><td> ---</td><td>182 </td><td> 151 </td><td> 27 </td><td> 4 </td><td> --- </td><td> ---</td></tr>
+<tr><td>Vehicle Deform</td><td>5 </td><td> 5 </td><td> --- </td><td> --- </td><td> --- </td><td> ---</td><td>10 </td><td> 10 </td><td> --- </td><td> --- </td><td> --- </td><td> ---</td></tr>
+<tr><td>Vehicle Scale</td><td>12 </td><td> 12 </td><td> --- </td><td> --- </td><td> --- </td><td> ---</td><td>95 </td><td> 70 </td><td> 11 </td><td> 5 </td><td> 9 </td><td> ---</td></tr>
+<tr><td>Sign Replace</td><td>0 </td><td> --- </td><td> --- </td><td> --- </td><td> --- </td><td> ---</td><td>38 </td><td> 34 </td><td> 3 </td><td> 1 </td><td> --- </td><td> ---</td></tr>
+<tr><td>Total</td><td>173 </td><td> 140 </td><td> 27 </td><td> 5 </td><td> 1 </td><td> ---</td><td>1813 </td><td> 1153 </td><td> 485 </td><td> 127 </td><td> 37 </td><td> 11</td></tr>
+<tr><td>%</td><td> </td><td> (81%) </td><td> (16%) </td><td> (3%) </td><td> (1%) </td><td> </td><td></td><td> (64%) </td><td> (27%) </td><td> (7%) </td><td> (2%) </td><td> (1%) </td></tr>
+</table>
