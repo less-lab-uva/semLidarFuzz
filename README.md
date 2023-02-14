@@ -60,3 +60,8 @@ Examples of false positive and true positive failures as determined by our votin
 ## Additional Implementation Details
 As noted in Section III, the implementation of only three of the basic mutation operations were selected for discussion. 
 Complete discussion of all of the basic mutation operations are available in [this supplement](Generating%20Realistic%20and%20Diverse%20Tests%20for%20LiDAR-Based%20Perception%20Systems%20Additional%20Implementation%20Details.pdf). 
+
+# License
+The software contained in this repository is covered under the included [LICENSE](./LICENSE) file.
+The paper included in this repository is ***not*** covered by this license and is instead covered by the [IEEE Copyright](https://www.ieee.org/publications/rights/copyright-main.html).
+The paper is included under the terms of the IEEE copyright to be included on the author's personal servers.
