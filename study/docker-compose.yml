@@ -3,5 +3,6 @@ services:
   figs:
     container_name: figs
     image: study_figs:latest
+    command: tail -f /dev/null
     volumes:
       - ./:/root/

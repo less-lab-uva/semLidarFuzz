@@ -12,6 +12,7 @@ services:
   gen_lidar_tests:
     container_name: gen_lidar_tests
     image: tool_gen_lidar_tests:latest
+    command: tail -f /dev/null
     volumes:
       - ./:/root/
       - /var/run/docker.sock:/var/run/docker.sock
