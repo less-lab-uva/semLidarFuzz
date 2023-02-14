@@ -1,6 +1,7 @@
 selected_data
 .bash_history
 .keep
+.docker
 sample_tool_output
 tool/genLidarTestTool/suts
 .sut
